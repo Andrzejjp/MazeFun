@@ -7,7 +7,7 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
-grid1 = Grid(10,10)
+grid1 = Grid(11,10)
 grid1.OutputGrid()
 
 ############################################################################################################################

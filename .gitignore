@@ -1,0 +1,2 @@
+#pygame creates a cache sometimes and it doesnt need to be pushed to git
+/__pycache__
