@@ -1,13 +1,14 @@
 ##Todo
-#make the grid an object and make the parts of the maze like: "composition"
-
 import pygame
+from GridMethods import Grid
 WinSize = (1400,700)
 FPS = 60
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
+grid1 = Grid(10,10)
+grid1.OutputGrid()
 
 ############################################################################################################################
 while running:
