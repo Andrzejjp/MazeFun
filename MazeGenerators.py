@@ -1,2 +1,2 @@
 import random 
-def Kruskals_Algorithm(grid):
+def ModifiedPrims_Algorithm(grid,startPos):
