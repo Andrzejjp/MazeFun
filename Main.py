@@ -8,12 +8,12 @@ clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
 grid1 = Grid(11,10)
-grid1.OutputGrid()
+grid1.mapArray[5][3] = 0
 
 ############################################################################################################################
 while running:
     win.fill((200,0,0))
-    
+    grid1.DrawGrid(win,16)
     
 
 

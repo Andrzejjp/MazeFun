@@ -1,3 +1,4 @@
+import pygame
 class Grid:
     def __init__(self,rows,cols):
         self.rows = rows
@@ -10,4 +11,11 @@ class Grid:
         for y in range(self.cols):
             for x in range(self.rows):
                 print(self.mapArray[x][y], end = " , ")
-            print("\n")    
+            print("\n")
+
+    def DrawGrid(self,surface,square):
+        squareColour = (0,30,200)
+        for y in range(self.cols):
+            for x in range(self.rows):
+                if self.mapArray[x][y] == 0:
+                    pygame.draw.rect(surface,squareColour,pygame.rect((x*square,y*square),(square,square))) 
