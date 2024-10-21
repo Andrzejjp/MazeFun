@@ -3,7 +3,6 @@ class Grid:
     def __init__(self,rows,cols):
         self.rows = rows
         self.cols = cols
-
         #creates the 2d array for storing the maze
         self.mapArray =  [[1 for y in range(cols)] for x in range(rows)]
     
@@ -18,4 +17,4 @@ class Grid:
         for y in range(self.cols):
             for x in range(self.rows):
                 if self.mapArray[x][y] == 0:
-                    pygame.draw.rect(surface,squareColour,pygame.rect((x*square,y*square),(square,square))) 
+                    pygame.draw.rect(surface,squareColour,pygame.Rect((x*square,y*square),(square,square)))

@@ -1,6 +1,7 @@
 ##Todo
 import pygame
 from GridMethods import Grid
+from MazeGenerators import *
 WinSize = (1400,700)
 FPS = 60
 running = True
@@ -8,7 +9,9 @@ clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
 grid1 = Grid(11,10)
-grid1.mapArray[5][3] = 0
+grid1.OutputGrid()
+visitedList = []
+DepthFirst(grid1,(6,0),visitedList)
 
 ############################################################################################################################
 while running:
