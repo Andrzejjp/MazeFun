@@ -1,4 +1,5 @@
 ##Todo
+#fix mazeGenerators 
 import pygame
 from GridMethods import Grid
 from MazeGenerators import *
@@ -10,8 +11,7 @@ pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
 grid1 = Grid(11,10)
 grid1.OutputGrid()
-visitedList = []
-DepthFirst(grid1,(6,0),visitedList)
+DepthFirst(grid1,(6,0))
 
 ############################################################################################################################
 while running:
