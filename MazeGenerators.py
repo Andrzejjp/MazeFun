@@ -1,17 +1,22 @@
 import random 
+pathchar = "-"
+wallchar = 1
+
 def CheckVisits(grid,pos):
     count = 0
-    if (pos[0]>0 and pos[0]< grid.rows) and (pos[1]>0 and pos[1]<grid.cols):
-        if grid.mapArray[pos[0]+1][pos[1]] == 0:
+    if pos[0] < grid.rows-1:
+        if grid.mapArray[pos[0]+1][pos[1]] == pathchar:
             count += 1
-        if grid.mapArray[pos[0]-1][pos[1]] == 0:
+    if pos[0] > 0:
+        if grid.mapArray[pos[0]-1][pos[1]] == pathchar:
             count += 1
-        if grid.mapArray[pos[0]][pos[1]+1] == 0:
+    if pos[1] < grid.cols-1:
+        if grid.mapArray[pos[0]][pos[1]+1] == pathchar:
             count += 1
-        if grid.mapArray[pos[0]][pos[1]-1] == 0:
+    if pos[1] > 0:
+        if grid.mapArray[pos[0]][pos[1]-1] == pathchar:
             count += 1
-    else:
-        print("edged")
+
     if count <= 1:
         return True
     else:
@@ -25,7 +30,7 @@ def DepthFirst(grid,startPos):
     grid.OutputGrid()
     print()
     directionArray = [(1,0),(-1,0),(0,1),(0,-1)]
-    grid.mapArray[startPos[0]][startPos[1]] = 0
+    grid.mapArray[startPos[0]][startPos[1]] = pathchar
 
     #Picks a direction to travel in
     while len(directionArray) != 0:
@@ -36,7 +41,7 @@ def DepthFirst(grid,startPos):
         #checks if its in the grid or if already been
         if newPos[0] < grid.rows and newPos[0] >= 0:
             if newPos[1] < grid.cols and newPos[1] >= 0:
-                if grid.mapArray[newPos[0]][newPos[1]] == 1:
+                if grid.mapArray[newPos[0]][newPos[1]] == wallchar:
                     #checks for cycles
                     if CheckVisits(grid,newPos) == True:
                         DepthFirst(grid,newPos)

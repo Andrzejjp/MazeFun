@@ -9,7 +9,7 @@ class Maze:
     def OutputGrid(self):
         for y in range(self.cols):
             for x in range(self.rows):
-                print(self.mapArray[x][y], end = " , ")
+                print(self.mapArray[x][y], end = "  ")
             print("\n")
 
     def DrawGrid(self,surface,square):
