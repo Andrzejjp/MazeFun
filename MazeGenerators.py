@@ -3,19 +3,31 @@ pathchar = "-"
 wallchar = 1
 
 def CheckVisits(grid,pos):
+    #checks how many neighbours a cell has directly around it(4 cardinal directions)
     count = 0
     if pos[0] < grid.rows-1:
         if grid.mapArray[pos[0]+1][pos[1]] == pathchar:
             count += 1
+    else:
+        count += 1
+
     if pos[0] > 0:
         if grid.mapArray[pos[0]-1][pos[1]] == pathchar:
             count += 1
+    else:
+        count += 1
+
     if pos[1] < grid.cols-1:
         if grid.mapArray[pos[0]][pos[1]+1] == pathchar:
             count += 1
+    else:
+        count += 1
+
     if pos[1] > 0:
         if grid.mapArray[pos[0]][pos[1]-1] == pathchar:
             count += 1
+    else:
+        count += 1
 
     if count <= 1:
         return True

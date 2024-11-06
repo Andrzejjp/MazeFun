@@ -9,9 +9,9 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((WinSize[0], WinSize[1]))
-Maze1 = Maze(20,10)
+Maze1 = Maze(15,15)
 Maze1.OutputGrid()
-DepthFirst(Maze1,(0,0))
+DepthFirst(Maze1,(7,0))
 
 ############################################################################################################################
 while running:
