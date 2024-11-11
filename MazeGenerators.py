@@ -3,17 +3,17 @@ import random
 def CheckVisits(grid,pos):
     #checks how many neighbours a cell has (checks the 8 sourunding cells)
     neighbours = 0
+
     for i in range(-1,2):
         for j in range(-1,2):
-            if i != 0 and j != 0:
 
-                if pos[0]+i < 0 or pos[0]+i > grid.rows-1 or pos[1]+j < 0 or pos[1]+j > grid.cols-1:
-                    neighbours += 1
+            if pos[0]+i < 0 or pos[0]+i > grid.rows-1 or pos[1]+j < 0 or pos[1]+j > grid.cols-1:
+                neighbours += 1
                 
-                elif grid.mapArray[pos[0]+i][pos[1]+j] == grid.pathChar:
-                    neighbours += 1
+            elif grid.mapArray[pos[0]+i][pos[1]+j] == grid.pathChar:
+                neighbours += 1
 
-    if neighbours <= 1:
+    if neighbours <= 3:
         return True
     return False
     
