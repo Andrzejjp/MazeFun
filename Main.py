@@ -3,21 +3,19 @@
 import pygame
 from MazeMethods import Maze
 from MazeGenerators import *
-WinSize = (1400,700)
+winSize = (1400,700)
 FPS = 60
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
-win = pygame.display.set_mode((WinSize[0], WinSize[1]))
-Maze1 = Maze(15,15)
-Maze1.OutputGrid()
-DepthFirst(Maze1,(7,0))
+win = pygame.display.set_mode((winSize[0], winSize[1]))
+Maze1 = Maze(40,40)
+DepthFirst(Maze1,(5,0))
 
 ############################################################################################################################
 while running:
     win.fill((200,0,0))
     Maze1.DrawGrid(win,16)
-    
 
 
 

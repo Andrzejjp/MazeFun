@@ -1,48 +1,30 @@
 import random 
-pathchar = "-"
-wallchar = 1
 
 def CheckVisits(grid,pos):
-    #checks how many neighbours a cell has directly around it(4 cardinal directions)
-    count = 0
-    if pos[0] < grid.rows-1:
-        if grid.mapArray[pos[0]+1][pos[1]] == pathchar:
-            count += 1
-    else:
-        count += 1
+    #checks how many neighbours a cell has (checks the 8 sourunding cells)
+    neighbours = 0
+    for i in range(-1,2):
+        for j in range(-1,2):
+            if i != 0 and j != 0:
 
-    if pos[0] > 0:
-        if grid.mapArray[pos[0]-1][pos[1]] == pathchar:
-            count += 1
-    else:
-        count += 1
+                if pos[0]+i < 0 or pos[0]+i > grid.rows-1 or pos[1]+j < 0 or pos[1]+j > grid.cols-1:
+                    neighbours += 1
+                
+                elif grid.mapArray[pos[0]+i][pos[1]+j] == grid.pathChar:
+                    neighbours += 1
 
-    if pos[1] < grid.cols-1:
-        if grid.mapArray[pos[0]][pos[1]+1] == pathchar:
-            count += 1
-    else:
-        count += 1
-
-    if pos[1] > 0:
-        if grid.mapArray[pos[0]][pos[1]-1] == pathchar:
-            count += 1
-    else:
-        count += 1
-
-    if count <= 1:
+    if neighbours <= 1:
         return True
-    else:
-        return False
+    return False
     
 
 
 
 
 def DepthFirst(grid,startPos):
-    grid.OutputGrid()
-    print()
+
     directionArray = [(1,0),(-1,0),(0,1),(0,-1)]
-    grid.mapArray[startPos[0]][startPos[1]] = pathchar
+    grid.mapArray[startPos[0]][startPos[1]] = grid.pathChar
 
     #Picks a direction to travel in
     while len(directionArray) != 0:
@@ -53,10 +35,11 @@ def DepthFirst(grid,startPos):
         #checks if its in the grid or if already been
         if newPos[0] < grid.rows and newPos[0] >= 0:
             if newPos[1] < grid.cols and newPos[1] >= 0:
-                if grid.mapArray[newPos[0]][newPos[1]] == wallchar:
+                if grid.mapArray[newPos[0]][newPos[1]] == grid.wallChar:
                     #checks for cycles
                     if CheckVisits(grid,newPos) == True:
                         DepthFirst(grid,newPos)
+                    directionArray.pop(directionIndex)
 
                 else:
                     directionArray.pop(directionIndex)
