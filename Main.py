@@ -10,12 +10,10 @@ clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
 Maze1 = Maze(40,40)
-DepthFirst(Maze1,(5,0))
 
 ############################################################################################################################
 while running:
     win.fill((200,0,0))
-    Maze1.DrawGrid(win,16)
 
 
 
