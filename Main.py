@@ -9,7 +9,8 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
-Maze1 = Maze(40,40)
+maze1 = Maze(5,5)
+maze1.OutputMaze()
 
 ############################################################################################################################
 while running:
