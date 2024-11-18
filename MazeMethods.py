@@ -28,7 +28,8 @@ class Maze:
                 array[x][y] = newCell
         return array
     
-    def RemoveAdjacentCellWalls()
+    def RemoveCellWalls(self,cellPos,direction):
+        currentCell = self.cellArray[cellPos[0]][cellPos[1]]
     
 
     def OutputMaze(self):
@@ -43,22 +44,3 @@ class Maze:
                 print(walls, end = "    ")
             print("\n")
 
-
-
-
-
-
-
-
-    #def OutputGrid(self):
-    #    for y in range(self.cols):
-    #        for x in range(self.rows):
-    #            print(self.mapArray[x][y], end = "    ")
-    #        print("\n")
-
-    #def DrawGrid(self,surface,square):
-    #    squareColour = (100,150,200)
-    #    for y in range(self.cols):
-    #        for x in range(self.rows):
-    #            if self.mapArray[x][y] == self.pathChar:
-    #                pygame.draw.rect(surface,squareColour,pygame.Rect((x*square,y*square),(square,square)))
