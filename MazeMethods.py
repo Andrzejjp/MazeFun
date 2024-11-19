@@ -30,6 +30,8 @@ class Maze:
     
     def RemoveCellWalls(self,cellPos,direction):
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
+        adjacentCellCoords = (currentCell[0]+direction[0],currentCell[1]+direction[1])
+        #checks if adjacentCellCoords exist
     
 
     def OutputMaze(self):
