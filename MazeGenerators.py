@@ -14,6 +14,7 @@ def DepthFirst(maze,pos,visitedList):
             if newPos[0] < maze.rows and newPos[0] >= 0:
                 if newPos[1] < maze.cols and newPos[1] >= 0:
                     #checks if the cell has been visited
+                    pass
 
     
 

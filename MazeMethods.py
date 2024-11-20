@@ -28,10 +28,31 @@ class Maze:
                 array[x][y] = newCell
         return array
     
-    def RemoveCellWalls(self,cellPos,direction):
+    def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
-        adjacentCellCoords = (currentCell[0]+direction[0],currentCell[1]+direction[1])
+        adjacentCellCoords = (cellPos[0]+direction[0],cellPos[1]+direction[1])
         #checks if adjacentCellCoords exist
+        if adjacentCellCoords[0] < self.rows and adjacentCellCoords[0] >= 0:
+            if adjacentCellCoords[1] < self.cols and adjacentCellCoords[1] >= 0:
+                adjacentCell = self.cellArray[adjacentCellCoords[0]][adjacentCellCoords[1]]
+                match direction:
+                    case (1,0):
+                        adjacentCell.wallsList[1] = False
+                    case(-1,0):
+                        adjacentCell.wallsList[0] = False
+                    case(0,1):
+                        adjacentCell.wallsList[3] = False
+                    case(0,-1):
+                        adjacentCell.wallsList[2] = False
+        match direction:
+                    case (1,0):
+                        currentCell.wallsList[0] = False
+                    case(-1,0):
+                        currentCell.wallsList[1] = False
+                    case(0,1):
+                        currentCell.wallsList[2] = False
+                    case(0,-1):
+                        currentCell.wallsList[3] = False
     
 
     def OutputMaze(self):
