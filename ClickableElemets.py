@@ -1,26 +1,46 @@
 import pygame
 
+#parent class to everything that requires mouse click
 class ClickableElemets:
-    def __init__(self,pos,box,colour=(200,200,200)):
+    def __init__(self,pos,box,surf):
         self.pos = pos
         self.box = box
-        self.colour = colour
+        self.surf = surf
+        self.hover = False
         self.clicked = False
         
     def Hover(self):
         mousePos = pygame.mouse.get_pos()
         if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+self.box[0]:
             if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+self.box[1]:
-                self.colour = (255,255,255)
-                return True
-        return False
+                hover = True
+        hover = False
 
     def RegisterClick(self):
-        if self.Hover() == True:
+        self.hover()
+        if self.hover == True:
             if pygame.mouse.get_pressed()[0]:
                 self.clicked = True
 
 
 class Button(ClickableElemets):
-    
+    def __init__(self,pos,box,surf,text,colour=(200,200,200),hcolour=(250,250,250)):
+        super().__init(pos,box,surf)
+        pygame.font.init()
+        self.font = pygame.font.SysFont()
+        self.colour = colour
+        self.hcolour = hcolour
+        self.text = text
+        self.bRect = pygame.Rect(self.pos,self.box)
+
+    def Draw(self):
+        self.RegisterClick()
+        if self.hover == True:
+            pygame.draw.rect(self.surf,self.bRect,self.hcolour)
+        else:
+            pygame.draw.rect(self.surf,self.bRect,self.hcolour)
+        textSurf = self.font.render(self.text,True,(0,0,0))
+        pygame.Surface.blit(textSurf,self.surf)
+
+
         
