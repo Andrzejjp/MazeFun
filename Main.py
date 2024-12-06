@@ -8,11 +8,14 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
-clickBox = ClickableElemets((0,0),(500,500))
+button1 = Button((0,0),(500,500),win,"happychappy",)
+
 
 ############################################################################################################################
 while running:
     win.fill((20,20,110))
+    button1.Draw()
+
     
 
 
