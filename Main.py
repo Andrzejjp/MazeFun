@@ -8,7 +8,7 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
-button1 = Button((0,0),(500,500),win,"Button")
+button1 = Button((20,20),(100,50),win,"Button")
 
 
 ############################################################################################################################

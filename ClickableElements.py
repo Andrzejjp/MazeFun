@@ -28,12 +28,14 @@ class ClickableElements:
 
 
 class Button(ClickableElements):
-    def __init__(self,pos,box,surf,text,colour=(200,200,200),hcolour=(250,250,250)):
+    def __init__(self,pos,box,surf,text,fsize= 36,colour= (200,200,200),hcolour= (250,250,250),fcolour= (0,0,0)):
         super().__init__(pos,box,surf)
         pygame.font.init()
         self.font = pygame.font.SysFont(pygame.font.get_default_font(), 36)
         self.colour = colour
         self.hcolour = hcolour
+        self.fcolour = fcolour
+        self.fsize = fsize
         self.text = text
         self.bRect = pygame.Rect(self.pos,self.box)
 
@@ -43,8 +45,11 @@ class Button(ClickableElements):
             pygame.draw.rect(self.surf,self.hcolour,self.bRect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.bRect)
-        textSurf = self.font.render(self.text,True,(0,0,0))
-        pygame.Surface.blit(self.surf,textSurf,(self.pos[0]+self.box[0]/2,self.pos[1]+self.box[1]/2))
+        textSurf = self.font.render(self.text,True,self.fcolour)
+        #centers the text on the button
+        fontsize = self.font.size(self.text)
+        tPos = (self.pos[0]+self.box[0]/2-fontsize[0]/2,self.pos[1]+self.box[1]/2-fontsize[1]/2)
+        pygame.Surface.blit(self.surf,textSurf,tPos)
 
     def DoClicked(self):
         self.RegisterClick()
