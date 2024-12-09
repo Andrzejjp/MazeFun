@@ -28,14 +28,15 @@ class ClickableElements:
 
 
 class Button(ClickableElements):
-    def __init__(self,pos,box,surf,text,fsize= 36,colour= (200,200,200),hcolour= (250,250,250),fcolour= (0,0,0)):
+    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (250,250,250),fcolour= (0,0,0)):
         super().__init__(pos,box,surf)
         pygame.font.init()
-        self.font = pygame.font.SysFont(pygame.font.get_default_font(), 36)
+        self.fsize = fsize
+        #self.font = pygame.font.SysFont(pygame.font.get_default_font(), self.fsize)
+        self.font = pygame.font.SysFont("Courier New", self.fsize)
         self.colour = colour
         self.hcolour = hcolour
         self.fcolour = fcolour
-        self.fsize = fsize
         self.text = text
         self.bRect = pygame.Rect(self.pos,self.box)
 
