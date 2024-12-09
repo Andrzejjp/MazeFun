@@ -1,24 +1,27 @@
 import pygame
-from Main import win
+
 
 #parent class to everything that requires mouse click
 class ClickableElements:
     def __init__(self,pos,box,surf):
         self.pos = pos
         self.box = box
-        self.surf = win
+        self.surf = surf
         self.hover = False
         self.clicked = False
         
-    def Hover(self):
+    def Hovering(self):
         mousePos = pygame.mouse.get_pos()
         if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+self.box[0]:
             if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+self.box[1]:
                 self.hover = True
-        self.hover = False
+            else:
+                self.hover = False
+        else :
+            self.hover = False
 
     def RegisterClick(self):
-        self.Hover()
+        self.Hovering()
         if self.hover == True:
             if pygame.mouse.get_pressed()[0]:
                 self.clicked = True
@@ -35,13 +38,25 @@ class Button(ClickableElements):
         self.bRect = pygame.Rect(self.pos,self.box)
 
     def Draw(self):
-        self.RegisterClick()
+        self.Hovering()
         if self.hover == True:
-            pygame.draw.rect(self.surf,self.bRect,self.hcolour)
+            pygame.draw.rect(self.surf,self.hcolour,self.bRect)
         else:
-            pygame.draw.rect(self.surf,self.bRect,self.hcolour)
+            pygame.draw.rect(self.surf,self.colour,self.bRect)
         textSurf = self.font.render(self.text,True,(0,0,0))
-        pygame.Surface.blit(textSurf,self.surf)
+        pygame.Surface.blit(self.surf,textSurf,(self.pos[0]+self.box[0]/2,self.pos[1]+self.box[1]/2))
+
+    def DoClicked(self):
+        self.RegisterClick()
+        if self.clicked == True:
+            #what the button should do
+            print("clicked")
+            #make specific button sub classes
+            self.clicked = False
+    
+    def Run(self):
+        self.Draw()
+        self.DoClicked()
 
 
         
