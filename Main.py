@@ -1,6 +1,6 @@
 import pygame
 from MazeMethods import Maze
-from ClickableElemets import*
+from ClickableElements import*
 from MazeGenerators import *
 winSize = (1400,700)
 FPS = 60
