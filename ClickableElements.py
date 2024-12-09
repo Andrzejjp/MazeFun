@@ -1,11 +1,12 @@
 import pygame
+from Main import win
 
 #parent class to everything that requires mouse click
-class ClickableElemets:
+class ClickableElements:
     def __init__(self,pos,box,surf):
         self.pos = pos
         self.box = box
-        self.surf = surf
+        self.surf = win
         self.hover = False
         self.clicked = False
         
@@ -23,7 +24,7 @@ class ClickableElemets:
                 self.clicked = True
 
 
-class Button(ClickableElemets):
+class Button(ClickableElements):
     def __init__(self,pos,box,surf,text,colour=(200,200,200),hcolour=(250,250,250)):
         super().__init__(pos,box,surf)
         pygame.font.init()
@@ -34,7 +35,6 @@ class Button(ClickableElemets):
         self.bRect = pygame.Rect(self.pos,self.box)
 
     def Draw(self):
-        print("used")
         self.RegisterClick()
         if self.hover == True:
             pygame.draw.rect(self.surf,self.bRect,self.hcolour)
