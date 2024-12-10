@@ -13,9 +13,9 @@ class MazeCell:
 
 
 class Maze:
-    def __init__(self,surface,rows,cols):
-        self.drawSurface = surface
-        self.origin = (0,0)
+    def __init__(self,surface,pos,rows,cols):
+        self.surface = surface
+        self.origin = pos
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
         self.cellArray = self.GenerateCellArray(16,(255,255,255)) #stores all cells in a 2d array
@@ -26,7 +26,7 @@ class Maze:
         #fills it with cells
         for y in range(self.cols):
             for x in range(self.rows):
-                newCell = MazeCell(cellSize,(x*cellSize,y*cellSize),colour)
+                newCell = MazeCell(cellSize,(x*cellSize+self.origin[0],y*cellSize+self.origin[1]),colour)
                 array[x][y] = newCell
         return array
     
@@ -68,21 +68,21 @@ class Maze:
                 print(walls, end = "    ")
             print("\n")
 
-    def DrawMazeThin(self,surface,cellColour,wallColour):
+    def DrawMazeThin(self,cellColour,wallColour):
         for y in range(self.cols):
             for x in range(self.rows):
                 currentCell = self.cellArray[x][y]
-                pygame.draw.rect(surface,cellColour,currentCell.cellRect)
+                pygame.draw.rect(self.surface,cellColour,currentCell.cellRect)
 
                 if currentCell.wallsList[0] == True:
-                    pygame.draw.line(surface,wallColour,((currentCell.size-1)+x*currentCell.size,y*currentCell.size),((currentCell.size-1)+x*currentCell.size,(currentCell.size-1)+y*currentCell.size))
+                    pygame.draw.line(self.surface,wallColour,((currentCell.size-1)+x*currentCell.size+self.origin[0],y*currentCell.size+self.origin[1]),((currentCell.size-1)+x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]))
 
                 if currentCell.wallsList[1] == True:
-                    pygame.draw.line(surface,wallColour,(x*currentCell.size,y*currentCell.size),(x*currentCell.size,(currentCell.size-1)+y*currentCell.size))
+                    pygame.draw.line(self.surface,wallColour,(x*currentCell.size+self.origin[0],y*currentCell.size+self.origin[1]),(x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]))
 
                 if currentCell.wallsList[3] == True:
-                    pygame.draw.line(surface,wallColour,(x*currentCell.size,y*currentCell.size),((currentCell.size-1)+x*currentCell.size,y*currentCell.size))
+                    pygame.draw.line(self.surface,wallColour,(x*currentCell.size+self.origin[0],y*currentCell.size+self.origin[1]),((currentCell.size-1)+x*currentCell.size+self.origin[0],y*currentCell.size+self.origin[1]))
                 
                 if currentCell.wallsList[2] == True:
-                    pygame.draw.line(surface,wallColour,(x*currentCell.size,(currentCell.size-1)+y*currentCell.size),((currentCell.size-1)+x*currentCell.size,(currentCell.size-1)+y*currentCell.size))
+                    pygame.draw.line(self.surface,wallColour,(x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]),((currentCell.size-1)+x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]))
 
