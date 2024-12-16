@@ -55,7 +55,14 @@ class Maze:
                         currentCell.wallsList[2] = False
                     case(0,-1):
                         currentCell.wallsList[3] = False
-    
+
+    def ClearMaze(self): #puts the walls back on the maze 
+        for y in range(self.cols):
+            for x in range(self.rows):
+                currentCell = self.cellArray[x][y]
+                for i in range (4):
+                    currentCell.wallsList[i] = True
+
     def OutputMaze(self):
         #cycles through the list form top right to bottom left
         for y in range(self.cols):
@@ -85,4 +92,7 @@ class Maze:
                 
                 if currentCell.wallsList[2] == True:
                     pygame.draw.line(self.surface,wallColour,(x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]),((currentCell.size-1)+x*currentCell.size+self.origin[0],(currentCell.size-1)+y*currentCell.size+self.origin[1]))
+
+    def DrawMazeThick(self,cellColour,WallColour):
+        pass
 

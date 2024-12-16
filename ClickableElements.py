@@ -56,7 +56,7 @@ class Button(ClickableElements):
         self.RegisterClick()
         if self.clicked == True:
             #what the button should do
-            print("clicked")
+
             #make specific button sub classes
             self.clicked = False
     
