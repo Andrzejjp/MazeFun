@@ -19,7 +19,7 @@ def DepthFirst(maze,pos,visitedList):
                          if item == newPos:
                               visited = True
                     if visited == False:
-                         maze.TransformArray.append("R"+str(pos[0])+str(pos[1])+str(direction[0])+str(direction[1]))
+                         
                          maze.RemoveCellWalls(pos,direction)
                          DepthFirst(maze,newPos,visitedList)
                 
