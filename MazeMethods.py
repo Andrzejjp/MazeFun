@@ -18,6 +18,7 @@ class Maze:
         self.origin = pos
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
+        self.TransformArray = []
         self.cellArray = self.GenerateCellArray(16,(255,255,255)) #stores all cells in a 2d array
 
     def GenerateCellArray(self,cellSize,colour):
