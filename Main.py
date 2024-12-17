@@ -12,6 +12,7 @@ win = pygame.display.set_mode((winSize[0], winSize[1]))
 maze1 = Maze(win,(20,20),20,20)
 visitedList = []
 DepthFirst(maze1,(4,0),visitedList)
+print(maze1.stateString)
 
 ############################################################################################################################
 while running:

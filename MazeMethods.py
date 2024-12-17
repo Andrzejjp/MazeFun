@@ -18,7 +18,7 @@ class Maze:
         self.origin = pos
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
-        self.stateString = "" #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
+        self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
         self.cellArray = self.GenerateCellArray(16,(255,255,255)) #stores all cells in a 2d array
 
     def GenerateCellArray(self,cellSize,colour):
@@ -31,10 +31,20 @@ class Maze:
                 array[x][y] = newCell
         return array
 
-    def AddtoStateString(self,cellPos,direction):
+    def AddtoStateString(self,cellPos,direction): # direction followed by x and y in hex
         block = ""
-        cellPos
-        
+        if direction == (1,0):
+            block += "0"
+        elif direction == (-1,0):
+            block += "1"
+        elif direction == (0,1):
+            block += "2"
+        elif direction == (0,-1):
+            block += "3"
+        block += hex(cellPos[0])
+        block += hex(cellPos[1])
+        block += "."
+        self.stateString += block       
 
     def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
@@ -61,6 +71,11 @@ class Maze:
                         currentCell.wallsList[2] = False
                     case(0,-1):
                         currentCell.wallsList[3] = False
+
+    def GenerateMaze(self,step): #converts an instruction from state string to maze cell array
+        #extracts the relavent step#
+        
+        pass
 
     def ClearMaze(self): #puts the walls back on the maze 
         for y in range(self.cols):

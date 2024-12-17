@@ -19,8 +19,7 @@ def DepthFirst(maze,pos,visitedList):
                          if item == newPos:
                               visited = True
                     if visited == False:
-                         
-                         maze.RemoveCellWalls(pos,direction)
+                         maze.AddtoStateString(pos,direction)
                          DepthFirst(maze,newPos,visitedList)
                 
             directionArray.pop(directionIndex)
