@@ -31,8 +31,10 @@ class Maze:
                 array[x][y] = newCell
         return array
 
-    def AddtoStateString(self,cellPos,direction): #converts into a 20bit number and adds it to the rest of the state string
-        pass
+    def AddtoStateString(self,cellPos,direction):
+        block = ""
+        cellPos
+        
 
     def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
