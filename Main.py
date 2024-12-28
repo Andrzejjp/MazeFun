@@ -13,6 +13,7 @@ maze1 = Maze(win,(20,20),20,20)
 visitedList = []
 DepthFirst(maze1,(4,0),visitedList)
 print(maze1.stateString)
+print(maze1.GenerateMaze(1))
 
 ############################################################################################################################
 while running:

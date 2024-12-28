@@ -72,10 +72,34 @@ class Maze:
                     case(0,-1):
                         currentCell.wallsList[3] = False
 
-    def GenerateMaze(self,step): #converts an instruction from state string to maze cell array
-        #extracts the relavent step#
-        
-        pass
+    def GenerateMaze(self,step): #applies the relavent step to the maze step goes 1->
+        #extracts the relevant step#
+        instruction = ""
+        dotcount = 0
+        for i in self.stateString:
+            if i == ".":
+                dotcount += 1
+            if dotcount == step:
+                instruction += i
+        #finds the direction
+        dir = ""
+        match instruction[1] :
+            case "0":
+                dir = (1,0)
+            case "1":
+                dir = (-1,0)
+            case "2":
+                dir = (0,1)
+            case "3":
+                dir = (0,-1)
+        #finds the position
+        pos = ""
+        instruction = instruction[2:]
+        for i in range(len(instruction[2:])):
+            if instruction[2+i] == "x":
+                index = i+1
+        pos = (int(instruction[:index],0),int(instruction[index:],0))
+        print(dir,pos)
 
     def ClearMaze(self): #puts the walls back on the maze 
         for y in range(self.cols):
