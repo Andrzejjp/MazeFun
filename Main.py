@@ -1,4 +1,5 @@
 import pygame
+from StaticSurfs import DrawStatics
 from MazeMethods import Maze
 from ClickableElements import ClickableElements,Button
 from MazeGenerators import *
@@ -9,19 +10,18 @@ clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
 
-maze1 = Maze(win,(20,20),20,20)
+maze1 = Maze(win,(150,50),10,10)
 visitedList = []
 DepthFirst(maze1,(4,0),visitedList)
-print(maze1.stateString)
-print(maze1.GenerateMaze(1))
+
+
 
 ############################################################################################################################
 while running:
-    win.fill((20,20,110))
+    DrawStatics(win)
     maze1.DrawMazeThin((255,255,255),(100,200,250))
 
 
-    
 
 
 

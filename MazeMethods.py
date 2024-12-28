@@ -19,7 +19,7 @@ class Maze:
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
         self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
-        self.cellArray = self.GenerateCellArray(16,(255,255,255)) #stores all cells in a 2d array
+        self.cellArray = self.GenerateCellArray(32,(255,255,255)) #stores all cells in a 2d array
 
     def GenerateCellArray(self,cellSize,colour):
         #generates array
@@ -72,7 +72,7 @@ class Maze:
                     case(0,-1):
                         currentCell.wallsList[3] = False
 
-    def GenerateMaze(self,step): #applies the relavent step to the maze step goes 1->
+    def ApplySteps(self,step): #applies the relavent step to the maze step goes 1->
         #extracts the relevant step#
         instruction = ""
         dotcount = 0
@@ -99,7 +99,7 @@ class Maze:
             if instruction[2+i] == "x":
                 index = i+1
         pos = (int(instruction[:index],0),int(instruction[index:],0))
-        print(dir,pos)
+        self.RemoveCellWalls(pos,dir)
 
     def ClearMaze(self): #puts the walls back on the maze 
         for y in range(self.cols):
