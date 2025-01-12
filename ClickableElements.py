@@ -42,6 +42,7 @@ class Button(ClickableElements):
         self.text = text
         self.bRect = pygame.Rect(self.pos,self.box)
 
+
     def Draw(self):
         if self.Hovering() == True:
             pygame.draw.rect(self.surf,self.hcolour,self.bRect)
@@ -53,17 +54,6 @@ class Button(ClickableElements):
         tPos = (self.pos[0]+self.box[0]/2-fontsize[0]/2,self.pos[1]+self.box[1]/2-fontsize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
-    def DoClicked(self):
-        self.RegisterClick()
-        if self.clicked == True:
-            #what the button should do
-            print("clicked")
-            #make specific button sub classes
-            self.clicked = False
-    
-    def Run(self):
-        self.Draw()
-        self.DoClicked()
 
 
         

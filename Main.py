@@ -15,7 +15,9 @@ maze1 = Maze(win,(150,50),10,10)
 visitedList = []
 DepthFirst(maze1,(4,0),visitedList)
 
-testButton = Button((0,0),(60,20),win,"Test")
+stepButton = Button((15,45),(60,20),win,"Step +1",14)
+
+count = 1
 
 
 
@@ -23,7 +25,15 @@ testButton = Button((0,0),(60,20),win,"Test")
 while running:
     DrawStatics(win)
     maze1.DrawMazeThin((255,255,255),(100,200,250))
-    testButton.Run()
+    
+    stepButton.Draw()
+    stepButton.RegisterClick()
+    if stepButton.clicked:
+        #
+        maze1.ApplySteps(count)
+        count+=1
+        #
+        stepButton.clicked = False
     
 
 
