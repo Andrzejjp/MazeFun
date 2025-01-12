@@ -7,23 +7,26 @@ class ClickableElements:
         self.pos = pos
         self.box = box
         self.surf = surf
-        self.hover = False
+        self.valid = False
         self.clicked = False
         
     def Hovering(self):
         mousePos = pygame.mouse.get_pos()
         if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+self.box[0]:
             if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+self.box[1]:
-                self.hover = True
+                return True
             else:
-                self.hover = False
+                return False
         else :
-            self.hover = False
+            return False
 
     def RegisterClick(self):
-        self.Hovering()
-        if self.hover == True:
+        if pygame.mouse.get_pressed()[0] == False:
+            self.valid = True
+
+        if self.Hovering() == True and self.valid == True:
             if pygame.mouse.get_pressed()[0]:
+                self.valid = False
                 self.clicked = True
 
 
@@ -32,7 +35,6 @@ class Button(ClickableElements):
         super().__init__(pos,box,surf)
         pygame.font.init()
         self.fsize = fsize
-        #self.font = pygame.font.SysFont(pygame.font.get_default_font(), self.fsize)
         self.font = pygame.font.SysFont("Courier New", self.fsize)
         self.colour = colour
         self.hcolour = hcolour
@@ -41,8 +43,7 @@ class Button(ClickableElements):
         self.bRect = pygame.Rect(self.pos,self.box)
 
     def Draw(self):
-        self.Hovering()
-        if self.hover == True:
+        if self.Hovering() == True:
             pygame.draw.rect(self.surf,self.hcolour,self.bRect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.bRect)
@@ -56,7 +57,7 @@ class Button(ClickableElements):
         self.RegisterClick()
         if self.clicked == True:
             #what the button should do
-
+            print("clicked")
             #make specific button sub classes
             self.clicked = False
     

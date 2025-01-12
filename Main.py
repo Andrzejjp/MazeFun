@@ -15,6 +15,7 @@ maze1 = Maze(win,(150,50),10,10)
 visitedList = []
 DepthFirst(maze1,(4,0),visitedList)
 
+testButton = Button((0,0),(60,20),win,"Test")
 
 
 
@@ -22,7 +23,7 @@ DepthFirst(maze1,(4,0),visitedList)
 while running:
     DrawStatics(win)
     maze1.DrawMazeThin((255,255,255),(100,200,250))
-
+    testButton.Run()
     
 
 
