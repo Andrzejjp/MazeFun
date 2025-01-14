@@ -18,8 +18,10 @@ class Maze:
         self.origin = pos
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
-        self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
-        self.cellArray = self.GenerateCellArray(32,(255,255,255)) #stores all cells in a 2d array
+        self.stateString = "." #stores the unique signiture of the algorithm
+        self.step = 1
+        self.end = 0 
+        self.cellArray = self.GenerateCellArray(20,(255,255,255)) #stores all cells in a 2d array
 
     def GenerateCellArray(self,cellSize,colour):
         #generates array
@@ -45,6 +47,13 @@ class Maze:
         block += hex(cellPos[1])
         block += "."
         self.stateString += block       
+
+    def CountSteps(self):#counts the steps of the state string
+        dots = 0
+        for dot in self.stateString:
+            if dot == ".":
+                dots += 1
+        self.end = dots
 
     def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
