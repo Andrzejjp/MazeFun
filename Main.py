@@ -11,10 +11,10 @@ pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
 pygame.display.set_caption("MazeFun")
 
-maze1 = Maze(win,(150,50),60,30)
+maze1 = Maze(win,(150,50),30,30)
 visitedList = []
 DepthFirst(maze1,(0,0),visitedList)
-maze1.CountSteps()
+
 
 
 
@@ -23,11 +23,7 @@ maze1.CountSteps()
 while running:
     DrawStatics(win)
     maze1.DrawMazeThin((255,255,255),(100,200,250))
-    
-
-    if maze1.step < maze1.end:
-        maze1.ApplySteps(maze1.step)
-        maze1.step +=1
+    maze1.ClickHandler()
 
 
 

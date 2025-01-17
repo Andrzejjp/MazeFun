@@ -1,4 +1,5 @@
 import pygame
+from ClickableElements import MazeCLick
 
 class MazeCell:
     def __init__(self,size,pos,colour):
@@ -21,7 +22,10 @@ class Maze:
         self.stateString = "." #stores the unique signiture of the algorithm
         self.step = 1
         self.end = 0 
-        self.cellArray = self.GenerateCellArray(20,(255,255,255)) #stores all cells in a 2d array
+        self.px = 20
+        self.selected = False
+        self.cellArray = self.GenerateCellArray(self.px,(255,255,255)) #stores all cells in a 2d array
+        self.clickObj = MazeCLick(self.origin,(self.rows*self.px,self.cols*self.px),self.surface) #the object that can be clicked
 
     def GenerateCellArray(self,cellSize,colour):
         #generates array
@@ -150,3 +154,16 @@ class Maze:
     def DrawMazeThick(self,cellColour,WallColour):
         pass
 
+    def ClickHandler(self):
+        
+        self.clickObj.RegisterClick()
+        print(self.selected)
+        if self.clickObj.clicked == True:
+            self.selected = True
+            self.clickObj.clicked = False
+        if self.clickObj.Hovering() == False:
+            self.selected = False
+
+
+    def Zoom(self):
+        pass
