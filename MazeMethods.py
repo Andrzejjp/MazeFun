@@ -20,8 +20,8 @@ class Maze:
         self.rows = rows #how many cells long it will be 
         self.cols = cols # how many cells high it will be
         self.stateString = "." #stores the unique signiture of the algorithm
-        self.step = 1
-        self.end = 0 
+        self.currentStep = 1
+        self.finalStep = 0 
         self.px = 20
         self.selected = False
         self.cellArray = self.GenerateCellArray(self.px,(255,255,255)) #stores all cells in a 2d array
@@ -157,13 +157,22 @@ class Maze:
     def ClickHandler(self):
         
         self.clickObj.RegisterClick()
-        print(self.selected)
         if self.clickObj.clicked == True:
             self.selected = True
             self.clickObj.clicked = False
         if self.clickObj.Hovering() == False:
             self.selected = False
 
-
     def Zoom(self):
-        pass
+        if self.selected:
+            key = pygame.key.get_pressed()
+            mousePos = pygame.mouse.get_pos()
+            vecDist = (mousePos[0]-self.origin[0],mousePos[1]-self.origin[1])
+            if key[pygame.K_o]:
+                self.px+= 1
+                self.origin = (vecDist[0]+1,vecDist[1]+1)
+            elif key[pygame.K_i] and self.px> 3:
+                self.px-= 1
+                self.origin = (vecDist[0]-1,vecDist[1]-1)
+            self.cellArray = self.GenerateCellArray(self.px,(255,255,255))
+            self.clickObj = MazeCLick(self.origin,(self.rows*self.px,self.cols*self.px),self.surface)

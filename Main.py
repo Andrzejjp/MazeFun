@@ -24,6 +24,7 @@ while running:
     DrawStatics(win)
     maze1.DrawMazeThin((255,255,255),(100,200,250))
     maze1.ClickHandler()
+    maze1.Zoom()
 
 
 
