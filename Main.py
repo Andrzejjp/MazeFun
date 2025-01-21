@@ -15,6 +15,9 @@ maze1 = Maze(win,(150,50),30,30)
 visitedList = []
 DepthFirst(maze1,(0,0),visitedList)
 
+maze1.currentStep = 70
+maze1.ApplySteps(maze1.currentStep)
+
 
 
 
@@ -22,7 +25,7 @@ DepthFirst(maze1,(0,0),visitedList)
 ############################################################################################################################
 while running:
     DrawStatics(win)
-    maze1.DrawMazeThin((255,255,255),(100,200,250))
+    maze1.DrawMazeThin()
     maze1.ClickHandler()
     maze1.Zoom()
 
