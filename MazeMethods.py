@@ -1,4 +1,5 @@
 import pygame
+from ClickableElements import MazeCLick
 
 class MazeCell:
     def __init__(self):
@@ -45,7 +46,15 @@ class Maze:
         block += "."
         self.stateString += block       
 
+    def CountSteps(self):#counts the steps of the state string
+        dots = 0
+        for dot in self.stateString:
+            if dot == ".":
+                dots += 1
+        self.end = dots
+
     def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
+        
         currentCell = self.cellArray[cellPos[0]][cellPos[1]]
         adjacentCellCoords = (cellPos[0]+direction[0],cellPos[1]+direction[1])
         #checks if adjacentCellCoords exist
@@ -71,7 +80,14 @@ class Maze:
                     case(0,-1):
                         currentCell.wallsList[3] = False
 
-    def ApplySteps(self,step): #applies the relavent step to the maze step goes 1->
+    def ClearMaze(self): #puts the walls back on the maze 
+        for y in range(self.cols):
+            for x in range(self.rows):
+                currentCell = self.cellArray[x][y]
+                for i in range (4):
+                    currentCell.wallsList[i] = True
+
+    def ApplyStep(self,step): #applies the relevant step to the maze step goes 1->
         #extracts the relevant step#
         instruction = ""
         dotcount = 0
@@ -100,12 +116,10 @@ class Maze:
         pos = (int(instruction[:index],0),int(instruction[index:],0))
         self.RemoveCellWalls(pos,dir)
 
-    def ClearMaze(self): #puts the walls back on the maze 
-        for y in range(self.cols):
-            for x in range(self.rows):
-                currentCell = self.cellArray[x][y]
-                for i in range (4):
-                    currentCell.wallsList[i] = True
+    def ApplySteps(self,step): #applies all steps from 1 to step
+        self.ClearMaze()
+        for i in range(1,step+1):
+            self.ApplyStep(i)
 
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left
@@ -144,3 +158,23 @@ class Maze:
     def DrawMazeThick(self):
         pass
 
+    def ClickHandler(self):
+        
+        self.clickObj.RegisterClick()
+        if self.clickObj.clicked == True:
+            self.selected = True
+            self.clickObj.clicked = False
+        if self.clickObj.Hovering() == False:
+            self.selected = False
+
+    def Zoom(self):
+        if self.selected:
+            key = pygame.key.get_pressed()
+            mousePos = pygame.mouse.get_pos()
+            if key[pygame.K_o]:
+                self.px+= 1
+            elif key[pygame.K_i] and self.px> 3:
+                self.px-= 1
+            self.cellArray = self.GenerateCellArray(self.px,(255,255,255))
+            self.clickObj = MazeCLick(self.origin,(self.rows*self.px,self.cols*self.px),self.surface)
+            self.ApplySteps(self.currentStep)
