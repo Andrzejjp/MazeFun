@@ -10,7 +10,7 @@ class MazeCell:
 
 
 class Maze:
-    def __init__(self,surface,pos,rows,cols,wColour=(20,20,100),bColour=(100,100,20)):
+    def __init__(self,surface,pos,rows,cols,wColour=(100,200,255),bColour=(255,255,255)):
         self.surface = surface
         self.origin = pos
         self.rows = rows #how many cells long it will be 
@@ -20,6 +20,10 @@ class Maze:
         self.px = 20
         self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
         self.cellArray = self.GenerateCellArray() #stores all cells in a 2d array
+        self.currentStep = 1
+        self.endStep = 1
+        self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
+        self.selected = False
 
     def GenerateCellArray(self):
         #generates array
@@ -116,9 +120,9 @@ class Maze:
         pos = (int(instruction[:index],0),int(instruction[index:],0))
         self.RemoveCellWalls(pos,dir)
 
-    def ApplySteps(self,step): #applies all steps from 1 to step
+    def UpdateMazeState(self): #applies all steps from 1 to current step
         self.ClearMaze()
-        for i in range(1,step+1):
+        for i in range(1,self.currentStep+1):
             self.ApplyStep(i)
 
     def OutputMaze(self): #displays the maze in the terminal
@@ -134,9 +138,17 @@ class Maze:
             print("\n")
 
     def DrawMazeThin(self):
+
+        surf = self.surface
+        px = self.px
+        oriX = self.origin[0]
+        oriY = self.origin[1]
+        wColour = self.wColour
+        
+
         #draws background
-        bRect = pygame.Rect(self.origin,(self.rows*self.px,self.cols*self.px))
-        pygame.draw.rect(self.surface,self.bColour,bRect)
+        bRect = self.mRect
+        pygame.draw.rect(surf,self.bColour,bRect)
 
         #draws walls
         for y in range(self.cols):
@@ -144,16 +156,16 @@ class Maze:
                 currentCell = self.cellArray[x][y]
 
                 if currentCell.wallsList[0] == True:
-                    pygame.draw.line()
+                    pygame.draw.line(surf,wColour,(x*px+px+oriX-1,y*px+oriY),(x*px+px+oriX-1,y*px+px+oriY))
 
                 if currentCell.wallsList[1] == True:
-                    pygame.draw.line()
+                    pygame.draw.line(surf,wColour,(x*px+oriX,y*px+oriY),(x*px+oriX,y*px+px+oriY))
 
                 if currentCell.wallsList[3] == True:
-                    pygame.draw.line()
+                    pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+oriY),(x*px+oriX,y*px+oriY))
                 
                 if currentCell.wallsList[2] == True:
-                    pygame.draw.line()
+                    pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+px+oriY-1),(x*px+oriX,y*px+px+oriY-1))
 
     def DrawMazeThick(self):
         pass

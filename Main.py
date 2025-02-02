@@ -11,14 +11,14 @@ pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
 pygame.display.set_caption("MazeFun")
 
-maze1 = Maze(win,(30,30),10,10)
-maze1.OutputMaze()
+maze1 = Maze(win,(120,50),10,10)
 
 
 
 ############################################################################################################################
 while running:
     DrawStatics(win)
+    maze1.DrawMazeThin()
     
 
 
