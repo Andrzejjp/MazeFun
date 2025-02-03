@@ -1,5 +1,5 @@
 import pygame
-from ClickableElements import MazeCLick
+from ClickableElements import MazeClick
 
 class MazeCell:
     def __init__(self):
@@ -23,6 +23,7 @@ class Maze:
         self.currentStep = 1
         self.endStep = 1
         self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
+        self.clickObj = MazeClick(self.origin,(self.rows*self.px,self.cols*self.px),self.surface)
         self.selected = False
 
     def GenerateCellArray(self):
@@ -34,6 +35,16 @@ class Maze:
                 newCell = MazeCell()
                 array[x][y] = newCell
         return array
+
+    def UpdatePx(self,newpx):
+        self.mRect = pygame.Rect(self.origin,(self.rows*newpx,self.cols*newpx))
+        self.clickObj = MazeClick(self.origin,(self.rows*newpx,self.cols*newpx),self.surface)
+        self.px = newpx
+
+    def UpdateOrigin(self,newOrigin):
+        self.mRect = pygame.Rect(newOrigin,(self.rows*self.px,self.cols*self.px))
+        self.clickObj = MazeClick(newOrigin,(self.rows*self.px,self.cols*self.px),self.surface)
+        self.origin = newOrigin
 
     def AddtoStateString(self,cellPos,direction): # direction followed by x and y in hex
         block = ""
@@ -147,7 +158,7 @@ class Maze:
         
 
         #draws background
-        bRect = self.mRect
+        bRect = pygame.Rect(self.origin,(self.rows*px,self.cols*px))
         pygame.draw.rect(surf,self.bColour,bRect)
 
         #draws walls
@@ -178,15 +189,9 @@ class Maze:
             self.clickObj.clicked = False
         if self.clickObj.Hovering() == False:
             self.selected = False
+        if self.selected == True:
+            pygame.draw.line()
+            pygame.draw.line()
+            pygame.draw.line()
+            pygame.draw.line()
 
-    def Zoom(self):
-        if self.selected:
-            key = pygame.key.get_pressed()
-            mousePos = pygame.mouse.get_pos()
-            if key[pygame.K_o]:
-                self.px+= 1
-            elif key[pygame.K_i] and self.px> 3:
-                self.px-= 1
-            self.cellArray = self.GenerateCellArray(self.px,(255,255,255))
-            self.clickObj = MazeCLick(self.origin,(self.rows*self.px,self.cols*self.px),self.surface)
-            self.ApplySteps(self.currentStep)

@@ -19,7 +19,8 @@ maze1 = Maze(win,(120,50),10,10)
 while running:
     DrawStatics(win)
     maze1.DrawMazeThin()
-    
+    maze1.ClickHandler()
+    print(maze1.selected)
 
 
 

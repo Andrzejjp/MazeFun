@@ -55,7 +55,7 @@ class Button(ClickableElements):
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
 
-class MazeCLick(ClickableElements):
+class MazeClick(ClickableElements):
     def __init__(self,pos,box,surf):
         super().__init__(pos,box,surf)
         
