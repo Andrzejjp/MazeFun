@@ -10,7 +10,7 @@ class MazeCell:
 
 
 class Maze:
-    def __init__(self,surface,pos,rows,cols,wColour=(100,200,255),bColour=(255,255,255)):
+    def __init__(self,surface,pos=(100,30),rows=10,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
         self.surface = surface
         self.origin = pos
         self.rows = rows #how many cells long it will be 
@@ -181,17 +181,30 @@ class Maze:
     def DrawMazeThick(self):
         pass
 
+    def MoveMaze(self):
+        pass
+    
+    
     def ClickHandler(self):
         
         self.clickObj.RegisterClick()
         if self.clickObj.clicked == True:
             self.selected = True
             self.clickObj.clicked = False
-        if self.clickObj.Hovering() == False:
+        if self.clickObj.Hovering() == False and pygame.mouse.get_pressed()[0] == True:
             self.selected = False
+        if self.selected == True and pygame.mouse.get_pressed()[0] == True:
+            self.MoveMaze()
+        
+        
         if self.selected == True:
-            pygame.draw.line()
-            pygame.draw.line()
-            pygame.draw.line()
-            pygame.draw.line()
 
+            originX = self.origin[0]
+            originY = self.origin[1]
+
+            pygame.draw.line(self.surface,(255,0,0),(originX+self.rows*self.px-1,originY),(originX+self.rows*self.px-1,originY+self.cols*self.px-1)) # fix
+            pygame.draw.line(self.surface,(255,0,0),(originX,originY),(originX,originY+self.cols*self.px-1))
+            pygame.draw.line(self.surface,(255,0,0),(originX,originY),(originX+self.rows*self.px-1,originY,))
+            pygame.draw.line(self.surface,(255,0,0),(originX,originY+self.cols*self.px-1),(originX+self.rows*self.px-1,originY+self.cols*self.px-1))
+        
+        

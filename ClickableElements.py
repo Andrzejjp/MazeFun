@@ -58,4 +58,16 @@ class Button(ClickableElements):
 class MazeClick(ClickableElements):
     def __init__(self,pos,box,surf):
         super().__init__(pos,box,surf)
+        self.mouseDisp = (0,0)
         
+    def RegisterClick(self):
+        if pygame.mouse.get_pressed()[0] == False:
+            self.valid = True
+
+        if self.Hovering() == True and self.valid == True:
+            if pygame.mouse.get_pressed()[0]:
+                self.valid = False
+                self.clicked = True
+                mousePos = pygame.mouse.get_pos()
+                self.mouseDisp = (self.pos[0]-mousePos[0],self.pos[1]-mousePos[1])
+                print(self.mouseDisp)

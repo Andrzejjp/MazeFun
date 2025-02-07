@@ -11,16 +11,26 @@ pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
 pygame.display.set_caption("MazeFun")
 
-maze1 = Maze(win,(120,50),10,10)
+mazeList = []
+
+newMazeB = Button((80,5),(100,20),win,"New Maze",15)
+
 
 
 
 ############################################################################################################################
 while running:
     DrawStatics(win)
-    maze1.DrawMazeThin()
-    maze1.ClickHandler()
-    print(maze1.selected)
+
+    newMazeB.RegisterClick()
+    if newMazeB.clicked == True:
+        mazeList.append(Maze(win))
+        newMazeB.clicked = False
+    newMazeB.Draw()
+
+    for maze in mazeList:
+        maze.DrawMazeThin()
+        maze.ClickHandler()
 
 
 
