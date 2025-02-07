@@ -182,8 +182,11 @@ class Maze:
         pass
 
     def MoveMaze(self):
-        pass
-    
+        disp = self.clickObj.mouseDisp
+        mousepos = pygame.mouse.get_pos()
+        self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
+        self.clickObj.mouseDisp = disp
+
     
     def ClickHandler(self):
         

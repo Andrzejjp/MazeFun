@@ -13,7 +13,7 @@ pygame.display.set_caption("MazeFun")
 
 mazeList = []
 
-newMazeB = Button((80,5),(100,20),win,"New Maze",15)
+newMazeB = Button((10,5),(80,20),win,"New Maze",15)
 
 
 

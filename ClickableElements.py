@@ -31,7 +31,7 @@ class ClickableElements:
 
 
 class Button(ClickableElements):
-    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (250,250,250),fcolour= (0,0,0)):
+    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
         super().__init__(pos,box,surf)
         pygame.font.init()
         self.fsize = fsize
@@ -69,5 +69,4 @@ class MazeClick(ClickableElements):
                 self.valid = False
                 self.clicked = True
                 mousePos = pygame.mouse.get_pos()
-                self.mouseDisp = (self.pos[0]-mousePos[0],self.pos[1]-mousePos[1])
-                print(self.mouseDisp)
+                self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
