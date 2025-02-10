@@ -1,7 +1,7 @@
 import pygame
 from StaticSurfs import DrawStatics
 from MazeMethods import Maze
-from ClickableElements import ClickableElements,Button
+from ClickableElements import Button
 from MazeGenerators import *
 winSize = (1400,700)
 FPS = 60
@@ -14,6 +14,8 @@ pygame.display.set_caption("MazeFun")
 mazeList = []
 
 newMazeB = Button((10,5),(80,20),win,"New Maze",15)
+
+algorithmB = Button((10,40),(80,20),win,"Apply",15)
 
 
 
@@ -31,6 +33,17 @@ while running:
     for maze in mazeList:
         maze.DrawMazeThin()
         maze.ClickHandler()
+        if maze.selected == True:
+            ##contains buttonrunstuff unique to each maze
+            algorithmB.RegisterClick()
+            if algorithmB.clicked == True:
+                vList= []
+                DepthFirst(maze,(0,0),vList)
+                algorithmB.clicked = False
+            algorithmB.Draw()
+                
+
+            
 
 
 

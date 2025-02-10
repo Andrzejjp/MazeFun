@@ -1,5 +1,7 @@
 import pygame
 
+leftBarRect = pygame.Rect(((0,0),(100,2000)))
+
 def DrawStatics(surf):
 
     surfSize = surf.get_size()

@@ -1,5 +1,8 @@
 import pygame
-from ClickableElements import MazeClick
+from ClickableElements import MazeClick,ClickableElements
+from StaticSurfs import leftBarRect
+
+
 
 class MazeCell:
     def __init__(self):
@@ -189,12 +192,12 @@ class Maze:
 
     
     def ClickHandler(self):
-        
+        noNoBox = ClickableElements((leftBarRect[0],leftBarRect[1]),(leftBarRect[2],leftBarRect[3]),self.surface)
         self.clickObj.RegisterClick()
         if self.clickObj.clicked == True:
             self.selected = True
             self.clickObj.clicked = False
-        if self.clickObj.Hovering() == False and pygame.mouse.get_pressed()[0] == True:
+        if self.clickObj.Hovering() == False and pygame.mouse.get_pressed()[0] == True and noNoBox.Hovering() == False:
             self.selected = False
         if self.selected == True and pygame.mouse.get_pressed()[0] == True:
             self.MoveMaze()
