@@ -71,3 +71,9 @@ class MazeClick(ClickableElements):
                 self.clicked = True
                 mousePos = pygame.mouse.get_pos()
                 self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
+
+
+class TextBox(Button):
+    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
+        super().__init__(pos,box,surf,text,fsize,colour,hcolour,fcolour)
+    
