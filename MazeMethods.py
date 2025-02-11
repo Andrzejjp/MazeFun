@@ -69,7 +69,7 @@ class Maze:
         for dot in self.stateString:
             if dot == ".":
                 dots += 1
-        self.end = dots
+        self.endStep = dots
 
     def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
         
@@ -98,7 +98,7 @@ class Maze:
                     case(0,-1):
                         currentCell.wallsList[3] = False
 
-    def ClearMaze(self): #puts the walls back on the maze 
+    def ClearMaze(self): #puts the walls back on the maze
         for y in range(self.cols):
             for x in range(self.rows):
                 currentCell = self.cellArray[x][y]
@@ -136,7 +136,7 @@ class Maze:
 
     def UpdateMazeState(self): #applies all steps from 1 to current step
         self.ClearMaze()
-        for i in range(1,self.currentStep+1):
+        for i in range(1,self.currentStep):
             self.ApplyStep(i)
 
     def OutputMaze(self): #displays the maze in the terminal
@@ -189,17 +189,16 @@ class Maze:
         mousepos = pygame.mouse.get_pos()
         self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
         self.clickObj.mouseDisp = disp
-
     
     def ClickHandler(self):
-        noNoBox = ClickableElements((leftBarRect[0],leftBarRect[1]),(leftBarRect[2],leftBarRect[3]),self.surface)
+        noNoBox = ClickableElements((leftBarRect[0],leftBarRect[1]+30),(leftBarRect[2],leftBarRect[3]))
         self.clickObj.RegisterClick()
         if self.clickObj.clicked == True:
             self.selected = True
             self.clickObj.clicked = False
         if self.clickObj.Hovering() == False and pygame.mouse.get_pressed()[0] == True and noNoBox.Hovering() == False:
             self.selected = False
-        if self.selected == True and pygame.mouse.get_pressed()[0] == True:
+        if self.selected == True and pygame.mouse.get_pressed()[0] == True and noNoBox.Hovering() == False:
             self.MoveMaze()
         
         

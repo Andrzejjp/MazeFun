@@ -37,8 +37,13 @@ while running:
             ##contains buttonrunstuff unique to each maze
             algorithmB.RegisterClick()
             if algorithmB.clicked == True:
+                maze.ClearMaze()
                 vList= []
                 DepthFirst(maze,(0,0),vList)
+                maze.CountSteps()
+                maze.currentStep = maze.endStep
+                maze.UpdateMazeState()
+                maze.stateString = "."
                 algorithmB.clicked = False
             algorithmB.Draw()
                 

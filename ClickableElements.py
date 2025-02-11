@@ -3,10 +3,9 @@ import pygame
 
 #parent class to everything that requires mouse click
 class ClickableElements:
-    def __init__(self,pos,box,surf):
+    def __init__(self,pos,box):
         self.pos = pos
         self.box = box
-        self.surf = surf
         self.valid = False
         self.clicked = False
         
@@ -32,8 +31,9 @@ class ClickableElements:
 
 class Button(ClickableElements):
     def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
-        super().__init__(pos,box,surf)
+        super().__init__(pos,box)
         pygame.font.init()
+        self.surf = surf
         self.fsize = fsize
         self.font = pygame.font.SysFont("Courier New", self.fsize)
         self.colour = colour
@@ -57,7 +57,8 @@ class Button(ClickableElements):
 
 class MazeClick(ClickableElements):
     def __init__(self,pos,box,surf):
-        super().__init__(pos,box,surf)
+        super().__init__(pos,box)
+        self.surf = surf
         self.mouseDisp = (0,0)
         
     def RegisterClick(self):
