@@ -76,4 +76,9 @@ class MazeClick(ClickableElements):
 class TextBox(Button):
     def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
         super().__init__(pos,box,surf,text,fsize,colour,hcolour,fcolour)
+        pygame.font.init()
+        recording = False
+
+    def Draw(self):
+        pass
     
