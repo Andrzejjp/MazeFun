@@ -189,7 +189,7 @@ class Maze:
         mousepos = pygame.mouse.get_pos()
         self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
         self.clickObj.mouseDisp = disp
-    
+    ###somehow get all of this into clickable elements file
     def ClickHandler(self):
         noNoBox = ClickableElements((leftBarRect[0],leftBarRect[1]+30),(leftBarRect[2],leftBarRect[3]))
         self.clickObj.RegisterClick()

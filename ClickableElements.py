@@ -73,12 +73,32 @@ class MazeClick(ClickableElements):
                 self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
 
 
-class TextBox(Button):
-    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
-        super().__init__(pos,box,surf,text,fsize,colour,hcolour,fcolour)
-        pygame.font.init()
-        recording = False
+class Slider(Button):
+    def __init__(self,pos,box,surf,text,max,min,fsize= 20,colour= (200,200,200),fcolour= (0,0,0)):
+        super().__init__(pos,box,surf,text,fsize,colour,fcolour)
+        self.railRect = pygame.rect((pos[0],pos[1]+box[1]*0.5),(box[0]*0.5,box[1]))
+        self.mouseDisp = (0,0)
+        self.max = max
+        self.min = min
 
-    def Draw(self):
+    def Hovering(self):
         pass
     
+    def RegisterClick(self):
+        if pygame.mouse.get_pressed()[0] == False:
+            self.valid = True
+
+        if self.Hovering() == True and self.valid == True:
+            if pygame.mouse.get_pressed()[0]:
+                self.valid = False
+                self.clicked = True
+                mousePos = pygame.mouse.get_pos()
+                self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
+
+    def Draw(self):
+        if self.Hovering() == True:
+            pass
+        else:
+            pass
+        pygame.draw.rect(self.surf,self.colour,self.railRect)
+
