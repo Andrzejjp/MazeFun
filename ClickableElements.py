@@ -74,15 +74,28 @@ class MazeClick(ClickableElements):
 
 
 class Slider(Button):
-    def __init__(self,pos,box,surf,text,max,min,fsize= 20,colour= (200,200,200),fcolour= (0,0,0)):
-        super().__init__(pos,box,surf,text,fsize,colour,fcolour)
-        self.railRect = pygame.rect((pos[0],pos[1]+box[1]*0.5),(box[0]*0.5,box[1]))
+    def __init__(self,pos,box,surf,text,max,min,fsize= 20,colour= (200,200,200),hcolour=(230,30,30),fcolour= (0,0,0)):
+        super().__init__(pos,box,surf,text,fsize,colour,hcolour,fcolour)
+        pygame.font.init()
         self.mouseDisp = (0,0)
         self.max = max
         self.min = min
+        self.relativeDashPos = (0,0)
+        self.dashBox = (box[1]*2,box[1]*4)
+
+    def ReturnValue(self):
+        pass
 
     def Hovering(self):
-        pass
+        dashRect = pygame.Rect((self.relativeDashPos[0]+self.bRect[0],self.relativeDashPos[1]+self.bRect[1]+self.bRect[3]/2-self.dashBox[1]/2),self.dashBox)
+        mousePos = pygame.mouse.get_pos()
+        if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+dashRect[2]:
+            if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+dashRect[3]:
+                return True
+            else:
+                return False
+        else :
+            return False
     
     def RegisterClick(self):
         if pygame.mouse.get_pressed()[0] == False:
@@ -94,11 +107,27 @@ class Slider(Button):
                 self.clicked = True
                 mousePos = pygame.mouse.get_pos()
                 self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
+                
+
 
     def Draw(self):
+        dashRect = pygame.Rect((self.relativeDashPos[0]+self.bRect[0],self.relativeDashPos[1]+self.bRect[1]+self.bRect[3]/2-self.dashBox[1]/2),self.dashBox)
+        pygame.draw.rect(self.surf,self.colour,self.bRect)
+
         if self.Hovering() == True:
-            pass
+            pygame.draw.rect(self.surf,self.hcolour,dashRect)
         else:
-            pass
-        pygame.draw.rect(self.surf,self.colour,self.railRect)
+            pygame.draw.rect(self.surf,self.colour,dashRect)
+        
+        # All the text
+        textSurf = self.font.render(self.text,True,self.fcolour)
+        minSurf = self.font.render(str(self.min),True,self.fcolour)
+        maxSurf = self.font.render(str(self.max),True,self.fcolour)
+        textSize = self.font.size(self.text)
+        tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]+self.box[1]/2-textSize[1])
+        minPos = (self.pos[0],self.pos[1]+self.box[1]/2)
+        maxPos = (self.pos[0]+self.box[0],self.pos[1]+self.box[1]/2)
+        pygame.Surface.blit(self.surf,textSurf,tPos)
+        pygame.Surface.blit(self.surf,minSurf,minPos)
+        pygame.Surface.blit(self.surf,maxSurf,maxPos)
 
