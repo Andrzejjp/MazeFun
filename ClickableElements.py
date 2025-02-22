@@ -89,7 +89,7 @@ class Slider(Button):
     def Hovering(self):
         dashRect = pygame.Rect((self.relativeDashPos[0]+self.bRect[0],self.relativeDashPos[1]+self.bRect[1]+self.bRect[3]/2-self.dashBox[1]/2),self.dashBox)
         mousePos = pygame.mouse.get_pos()
-        if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+dashRect[2]:
+        if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+self.relativeDashPos[0]+dashRect[2]:
             if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+dashRect[3]:
                 return True
             else:
@@ -106,9 +106,16 @@ class Slider(Button):
                 self.valid = False
                 self.clicked = True
                 mousePos = pygame.mouse.get_pos()
-                self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
-                
-
+                self.mouseDisp = (mousePos[0]-self.pos[0]-self.relativeDashPos[0],mousePos[1]-self.pos[1])
+        
+        if self.valid == False and self.Hovering() == True:
+            mousePos = pygame.mouse.get_pos()
+            staticPos = self.bRect[0]+self.mouseDisp[0]
+            self.relativeDashPos = (mousePos[0]-staticPos,0)
+            if self.relativeDashPos[0] < 0:
+                self.relativeDashPos = (0,0)
+            elif self.relativeDashPos[0] > self.bRect[2]-self.dashBox[0]:
+                self.relativeDashPos = (self.bRect[2]-self.dashBox[0],0)
 
     def Draw(self):
         dashRect = pygame.Rect((self.relativeDashPos[0]+self.bRect[0],self.relativeDashPos[1]+self.bRect[1]+self.bRect[3]/2-self.dashBox[1]/2),self.dashBox)
