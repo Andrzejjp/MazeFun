@@ -42,7 +42,6 @@ class Button(ClickableElements):
         self.text = text
         self.bRect = pygame.Rect(self.pos,self.box)
 
-
     def Draw(self):
         if self.Hovering() == True:
             pygame.draw.rect(self.surf,self.hcolour,self.bRect)
@@ -83,8 +82,20 @@ class Slider(Button):
         self.relativeDashPos = (0,0)
         self.dashBox = (box[1]*2,box[1]*4)
 
+    def SetValue(self,value):
+        range = self.max - self.min
+        temp = value - self.min
+        percent = temp/range
+        total = self.bRect[2]-self.dashBox[0]
+        self.relativeDashPos = (percent*total,0)
+
+
     def ReturnValue(self):
-        pass
+        total = self.max - self.min
+        range = self.bRect[2]-self.dashBox[0]
+        sliderPercent = (self.relativeDashPos[0])/range
+        value = self.min+(total*sliderPercent)
+        return(round(value))
 
     def Hovering(self):
         dashRect = pygame.Rect((self.relativeDashPos[0]+self.bRect[0],self.relativeDashPos[1]+self.bRect[1]+self.bRect[3]/2-self.dashBox[1]/2),self.dashBox)
@@ -127,14 +138,11 @@ class Slider(Button):
             pygame.draw.rect(self.surf,self.colour,dashRect)
         
         # All the text
-        textSurf = self.font.render(self.text,True,self.fcolour)
+        text = self.text+":"+str(self.ReturnValue())
+        textSurf = self.font.render(text,True,self.fcolour)
         minSurf = self.font.render(str(self.min),True,self.fcolour)
         maxSurf = self.font.render(str(self.max),True,self.fcolour)
-        textSize = self.font.size(self.text)
-        tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]+self.box[1]/2-textSize[1])
-        minPos = (self.pos[0],self.pos[1]+self.box[1]/2)
-        maxPos = (self.pos[0]+self.box[0],self.pos[1]+self.box[1]/2)
+        textSize = self.font.size(text)
+        tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]-textSize[1]-self.bRect[3])
         pygame.Surface.blit(self.surf,textSurf,tPos)
-        pygame.Surface.blit(self.surf,minSurf,minPos)
-        pygame.Surface.blit(self.surf,maxSurf,maxPos)
 
