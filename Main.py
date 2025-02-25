@@ -16,6 +16,7 @@ mazeList = []
 newMazeB = Button((10,5),(80,20),win,"New Maze",15)
 algorithmB = Button((10,40),(80,20),win,"Apply",15)
 sizeXSlider = Slider((10,85),(80,5),win,"sizeX",32,1,15)
+sizeYSlider = Slider((10,120),(80,5),win,"sizeY",32,1,15)
 
 
 ############################################################################################################################
@@ -30,7 +31,7 @@ while running:
 
     for maze in mazeList:
         maze.DrawMazeThin()
-        maze.ClickHandler()
+        maze.clickObj.RegisterClick()
         if maze.selected == True:
             ##contains buttonrunstuff unique to each maze
             algorithmB.RegisterClick()
@@ -46,7 +47,10 @@ while running:
             algorithmB.Draw()
             sizeXSlider.Draw()
             if sizeXSlider.RegisterClick() == True:
-                print(sizeXSlider.ReturnValue())
+                maze.UpdateSize(sizeXSlider.ReturnValue(),maze.cols)
+            sizeYSlider.Draw()
+            if sizeYSlider.RegisterClick() == True:
+                maze.UpdateSize(maze.rows,sizeYSlider.ReturnValue())
                 
 
             

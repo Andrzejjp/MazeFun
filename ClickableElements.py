@@ -55,21 +55,28 @@ class Button(ClickableElements):
 
 
 class MazeClick(ClickableElements):
-    def __init__(self,pos,box,surf):
-        super().__init__(pos,box)
+    def __init__(self,surf,maze):
+        self.pos = maze.origin
+        self.box = (maze.rows*maze.px,maze.cols*maze.px)
         self.surf = surf
+        self.maze = maze
         self.mouseDisp = (0,0)
+        self.valid = True
         
     def RegisterClick(self):
         if pygame.mouse.get_pressed()[0] == False:
             self.valid = True
 
-        if self.Hovering() == True and self.valid == True:
-            if pygame.mouse.get_pressed()[0]:
-                self.valid = False
-                self.clicked = True
-                mousePos = pygame.mouse.get_pos()
-                self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
+        if self.Hovering() == True and self.valid == True and pygame.mouse.get_pressed()[0]:
+            self.valid = False
+            mousePos = pygame.mouse.get_pos()
+            self.mouseDisp = (mousePos[0]-self.pos[0],mousePos[1]-self.pos[1])
+        
+        if self.valid == False:
+            mousePos = pygame.mouse.get_pos()
+            staticPos = (self.maze.origin[0]+self.mouseDisp[0],self.maze.origin[1]+self.mouseDisp[1])
+            print(staticPos[0]-mousePos[0])
+            self.maze.UpdateOrigin((staticPos[0]-mousePos[0],staticPos[1]-mousePos[1]))
 
 
 class Slider(Button):
