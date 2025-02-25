@@ -44,8 +44,9 @@ while running:
                 maze.stateString = "."
                 algorithmB.clicked = False
             algorithmB.Draw()
-            sizeXSlider.RegisterClick()
             sizeXSlider.Draw()
+            if sizeXSlider.RegisterClick() == True:
+                print(sizeXSlider.ReturnValue())
                 
 
             
