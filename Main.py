@@ -32,7 +32,7 @@ while running:
     for maze in mazeList:
         maze.DrawMazeThin()
         maze.clickObj.RegisterClick()
-        if maze.selected == True:
+        if maze.clickObj.selected == True:
             ##contains buttonrunstuff unique to each maze
             algorithmB.RegisterClick()
             if algorithmB.clicked == True:

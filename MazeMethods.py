@@ -27,7 +27,6 @@ class Maze:
         self.endStep = 1
         self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
         self.clickObj = MazeClick(self.surface,self)
-        self.selected = False
 
     def GenerateCellArray(self):
         #generates array
@@ -51,7 +50,7 @@ class Maze:
 
     def UpdateOrigin(self,newOrigin):
         self.mRect = pygame.Rect(newOrigin,(self.rows*self.px,self.cols*self.px))
-        self.clickObj = MazeClick(self.surface,self)
+        self.clickObj.pos = (newOrigin)
         self.origin = newOrigin
 
     def AddtoStateString(self,cellPos,direction): # direction followed by x and y in hex
