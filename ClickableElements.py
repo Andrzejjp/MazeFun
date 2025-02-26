@@ -94,6 +94,10 @@ class MazeClick(ClickableElements):
             pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1,mazePos[1]+mazeBox[1]+1),(mazePos[0],mazePos[1]+mazeBox[1]+1))
             pygame.draw.line(surf,colour,(mazePos[0],mazePos[1]+mazeBox[1]+1),mazePos)
 
+    def CheckSelect(self): #returns true if a maze has been selected only once per selection
+        if self.selectedIndicator == True:
+            self.selectedIndicator = False
+            return True
 
 class Slider(Button):
     def __init__(self,pos,box,surf,text,max,min,fsize= 20,colour= (200,200,200),hcolour=(230,30,30),fcolour= (0,0,0)):
@@ -176,4 +180,3 @@ class Slider(Button):
         textSize = self.font.size(text)
         tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]-textSize[1]-self.bRect[3])
         pygame.Surface.blit(self.surf,textSurf,tPos)
-

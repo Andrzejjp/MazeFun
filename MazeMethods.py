@@ -142,7 +142,6 @@ class Maze:
 
     def UpdateCurrentStep(self,step): #applies all steps from 1 to current step
         self.UpdateEndStep()
-        print(step)
         if 1 <= step and self.endStep >= step:
             self.currentStep = step
         else:

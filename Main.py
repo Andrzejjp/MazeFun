@@ -41,6 +41,9 @@ while running:
         maze.DrawMazeThin()
         maze.clickObj.RegisterClick()
         if maze.clickObj.selected == True:
+            if maze.clickObj.CheckSelect() == True:
+                sizeXS.SetValue(maze.rows)
+                sizeYS.SetValue(maze.cols)
             ##contains buttonrunstuff unique to each maze
             algorithmB.RegisterClick()
             if algorithmB.clicked == True:
@@ -51,6 +54,8 @@ while running:
                 maze.MakeEntrance()
                 maze.UpdateEndStep()
                 maze.UpdateCurrentStep(maze.endStep)
+                stepS.max = maze.endStep
+                stepS.SetValue(maze.endStep)
                 algorithmB.clicked = False
             algorithmB.Draw()
 
@@ -62,7 +67,6 @@ while running:
             if sizeYS.RegisterClick() == True:
                 maze.UpdateSize(maze.rows,sizeYS.ReturnValue())
             
-            stepS.max = maze.endStep
             stepS.Draw()
             if stepS.RegisterClick() == True:
                 maze.UpdateCurrentStep(stepS.ReturnValue())
@@ -70,12 +74,14 @@ while running:
             addStepB.RegisterClick()
             if addStepB.clicked == True and maze.endStep > maze.currentStep:
                 maze.UpdateCurrentStep(maze.currentStep + 1)
+                stepS.SetValue(maze.currentStep)
                 addStepB.clicked = False
             addStepB.Draw()
 
             subStepB.RegisterClick()
             if subStepB.clicked == True and 1 < maze.currentStep:
                 maze.UpdateCurrentStep(maze.currentStep - 1)
+                stepS.SetValue(maze.currentStep)
                 subStepB.clicked = False
             subStepB.Draw()
                 
