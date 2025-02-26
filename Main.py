@@ -14,9 +14,17 @@ pygame.display.set_caption("MazeFun")
 mazeList = []
 
 newMazeB = Button((10,5),(80,20),win,"New Maze",15)
+
+
 algorithmB = Button((10,40),(80,20),win,"ApplyAlgorithm",10)
-sizeXSlider = Slider((10,85),(80,5),win,"sizeX",32,1,15)
-sizeYSlider = Slider((10,120),(80,5),win,"sizeY",32,1,15)
+stepS = Slider((10,85),(80,5),win,"Step",1,1,15)
+addStepB = Button((15,100),(30,20),win,"+1",15)
+subStepB = Button((55,100),(30,20),win,"-1",15)
+
+
+sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
+sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
+
 
 
 ############################################################################################################################
@@ -40,18 +48,36 @@ while running:
                 maze.ClearMaze()
                 vList= []
                 DepthFirst(maze,(0,0),vList)
-                maze.CountSteps()
-                maze.currentStep = maze.endStep
-                maze.UpdateMazeState()
                 maze.MakeEntrance()
+                maze.UpdateEndStep()
+                maze.UpdateCurrentStep(maze.endStep)
                 algorithmB.clicked = False
             algorithmB.Draw()
-            sizeXSlider.Draw()
-            if sizeXSlider.RegisterClick() == True:
-                maze.UpdateSize(sizeXSlider.ReturnValue(),maze.cols)
-            sizeYSlider.Draw()
-            if sizeYSlider.RegisterClick() == True:
-                maze.UpdateSize(maze.rows,sizeYSlider.ReturnValue())
+
+            sizeXS.Draw()
+            if sizeXS.RegisterClick() == True:
+                maze.UpdateSize(sizeXS.ReturnValue(),maze.cols)
+
+            sizeYS.Draw()
+            if sizeYS.RegisterClick() == True:
+                maze.UpdateSize(maze.rows,sizeYS.ReturnValue())
+            
+            stepS.max = maze.endStep
+            stepS.Draw()
+            if stepS.RegisterClick() == True:
+                maze.UpdateCurrentStep(stepS.ReturnValue())
+
+            addStepB.RegisterClick()
+            if addStepB.clicked == True and maze.endStep > maze.currentStep:
+                maze.UpdateCurrentStep(maze.currentStep + 1)
+                addStepB.clicked = False
+            addStepB.Draw()
+
+            subStepB.RegisterClick()
+            if subStepB.clicked == True and 1 < maze.currentStep:
+                maze.UpdateCurrentStep(maze.currentStep - 1)
+                subStepB.clicked = False
+            subStepB.Draw()
                 
 
             

@@ -64,7 +64,7 @@ class Maze:
         block += "."
         self.stateString += block       
 
-    def CountSteps(self):#counts the steps of the state string
+    def UpdateEndStep(self):#Calculates and assingnes the value of self.endStep
         dots = 0
         for dot in self.stateString:
             if dot == ".":
@@ -101,8 +101,8 @@ class Maze:
     def MakeEntrance(self): #once an algorithim has been applied this remove to walls along the edges
         cellPosX = round(self.rows/2)
         
-        self.RemoveCellWalls((cellPosX,0),(0,-1))
-        self.RemoveCellWalls((cellPosX,self.cols-1),(0,1))
+        self.AddtoStateString((cellPosX,0),(0,-1))
+        self.AddtoStateString((cellPosX,self.cols-1),(0,1))
 
     def ClearMaze(self): #puts the walls back on the maze
         for y in range(self.cols):
@@ -140,7 +140,13 @@ class Maze:
         pos = (int(instruction[:index],0),int(instruction[index:],0))
         self.RemoveCellWalls(pos,dir)
 
-    def UpdateMazeState(self): #applies all steps from 1 to current step
+    def UpdateCurrentStep(self,step): #applies all steps from 1 to current step
+        self.UpdateEndStep()
+        print(step)
+        if 1 <= step and self.endStep >= step:
+            self.currentStep = step
+        else:
+            raise TypeError("step Value is outside the range")
         self.ClearMaze()
         for i in range(1,self.currentStep):
             self.ApplyStep(i)

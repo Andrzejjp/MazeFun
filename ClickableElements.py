@@ -63,6 +63,7 @@ class MazeClick(ClickableElements):
         self.mouseDisp = (0,0)
         self.valid = True
         self.selected = False
+        self.selectedIndicator = False
         
     def RegisterClick(self):
         if pygame.mouse.get_pressed()[0] == False:
@@ -74,6 +75,7 @@ class MazeClick(ClickableElements):
                 self.selected = False
             else:
                 self.selected = True
+                self.selectedIndicator = True
             mousePos = pygame.mouse.get_pos()
             self.mouseDisp = (mousePos[0]-self.maze.origin[0],mousePos[1]-self.maze.origin[1])
         
