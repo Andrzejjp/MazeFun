@@ -74,7 +74,6 @@ class MazeClick(ClickableElements):
                 self.selected = False
             else:
                 self.selected = True
-            print(self.selected)
             mousePos = pygame.mouse.get_pos()
             self.mouseDisp = (mousePos[0]-self.maze.origin[0],mousePos[1]-self.maze.origin[1])
         
@@ -83,7 +82,15 @@ class MazeClick(ClickableElements):
             self.maze.UpdateOrigin((mousePos[0]-self.mouseDisp[0],mousePos[1]-self.mouseDisp[1]))
         
         if self.selected == True:
-            pass
+            surf = self.surf
+            colour = (255,0,0)
+            px = self.maze.px
+            mazePos = (self.maze.origin[0]-1,self.maze.origin[1]-1)
+            mazeBox = (self.maze.rows*px,self.maze.cols*px)
+            pygame.draw.line(surf,colour,mazePos,(mazePos[0]+mazeBox[0]+1,mazePos[1]))
+            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1,mazePos[1]),(mazePos[0]+mazeBox[0]+1,mazePos[1]+mazeBox[1]+1))
+            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1,mazePos[1]+mazeBox[1]+1),(mazePos[0],mazePos[1]+mazeBox[1]+1))
+            pygame.draw.line(surf,colour,(mazePos[0],mazePos[1]+mazeBox[1]+1),mazePos)
 
 
 class Slider(Button):

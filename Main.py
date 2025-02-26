@@ -14,7 +14,7 @@ pygame.display.set_caption("MazeFun")
 mazeList = []
 
 newMazeB = Button((10,5),(80,20),win,"New Maze",15)
-algorithmB = Button((10,40),(80,20),win,"Apply",15)
+algorithmB = Button((10,40),(80,20),win,"ApplyAlgorithm",10)
 sizeXSlider = Slider((10,85),(80,5),win,"sizeX",32,1,15)
 sizeYSlider = Slider((10,120),(80,5),win,"sizeY",32,1,15)
 
@@ -36,13 +36,14 @@ while running:
             ##contains buttonrunstuff unique to each maze
             algorithmB.RegisterClick()
             if algorithmB.clicked == True:
+                maze.stateString = "."
                 maze.ClearMaze()
                 vList= []
                 DepthFirst(maze,(0,0),vList)
                 maze.CountSteps()
                 maze.currentStep = maze.endStep
                 maze.UpdateMazeState()
-                maze.stateString = "."
+                maze.MakeEntrance()
                 algorithmB.clicked = False
             algorithmB.Draw()
             sizeXSlider.Draw()

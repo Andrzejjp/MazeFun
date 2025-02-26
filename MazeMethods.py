@@ -3,13 +3,9 @@ from ClickableElements import MazeClick,ClickableElements
 from StaticSurfs import leftBarRect
 
 
-
 class MazeCell:
     def __init__(self):
         self.wallsList = [True,True,True,True] #(Right,Left,Up,Down)
-
-
-
 
 
 class Maze:
@@ -101,6 +97,12 @@ class Maze:
                         currentCell.wallsList[2] = False
                     case(0,-1):
                         currentCell.wallsList[3] = False
+
+    def MakeEntrance(self): #once an algorithim has been applied this remove to walls along the edges
+        cellPosX = round(self.rows/2)
+        
+        self.RemoveCellWalls((cellPosX,0),(0,-1))
+        self.RemoveCellWalls((cellPosX,self.cols-1),(0,1))
 
     def ClearMaze(self): #puts the walls back on the maze
         for y in range(self.cols):
