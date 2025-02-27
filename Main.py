@@ -18,8 +18,8 @@ newMazeB = Button((10,5),(80,20),win,"New Maze",15)
 
 algorithmB = Button((10,40),(80,20),win,"ApplyAlgorithm",10)
 stepS = Slider((10,85),(80,5),win,"Step",1,1,15)
-addStepB = Button((15,100),(30,20),win,"+1",15)
-subStepB = Button((55,100),(30,20),win,"-1",15)
+addStepB = Button((55,100),(30,20),win,"+1",15)
+subStepB = Button((15,100),(30,20),win,"-1",15)
 
 
 sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)

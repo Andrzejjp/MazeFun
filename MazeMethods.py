@@ -38,6 +38,7 @@ class Maze:
         self.rows = rows
         self.cols = cols
         self.cellArray = self.GenerateCellArray()
+        self.clickObj.box = (self.rows*self.px,self.cols*self.px)
 
     def UpdatePx(self,newpx):
         self.mRect = pygame.Rect(self.origin,(self.rows*newpx,self.cols*newpx))
