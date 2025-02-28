@@ -27,6 +27,7 @@ sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
 
 selectedMaze = None
 
+
 ############################################################################################################################
 while running:
     DrawStatics(win)
@@ -79,6 +80,7 @@ while running:
             selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
             selectedMaze.stateString = "."
             selectedMaze.UpdateCurrentStep(1)
+            stepS.max = 1
             stepS.SetValue(selectedMaze.currentStep)
 
         sizeYS.Draw()
@@ -86,6 +88,7 @@ while running:
             selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
             selectedMaze.stateString = "."
             selectedMaze.UpdateCurrentStep(1)
+            stepS.max = 1
             stepS.SetValue(selectedMaze.currentStep)
         
         stepS.Draw()
