@@ -238,5 +238,5 @@ class Maze:
             cellRect = pygame.Rect(pos,(self.px,self.px))
             pygame.draw.rect(overlaySurf,pastColour,cellRect)
         
-        pygame.Surface.blit(overlaySurf,self.surface,self.origin)
+        overlaySurf.blit(self.surface,self.origin)
 
