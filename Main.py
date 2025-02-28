@@ -42,15 +42,15 @@ while running:
         maze.clickObj.RegisterClick()
         
         #enforces 1 maze to be selected at a time
-        checkOneTrue = False
+        selectedCount = 0
         if maze.clickObj.selected == True and maze != selectedMaze:
             selectedMaze = maze
             for maze in mazeList:
                 if maze != selectedMaze:
                     maze.clickObj.selected = False
                 if maze.clickObj.selected == True:
-                    checkOneTrue = True
-        if checkOneTrue == False:
+                    selectedCount += 1
+        if selectedCount > 1:
             selectedMaze = None
 
     #deals with the selectedMaze's relevant buttons etc
@@ -58,6 +58,7 @@ while running:
         if selectedMaze.clickObj.CheckSelect() == True:
             sizeXS.SetValue(selectedMaze.rows)
             sizeYS.SetValue(selectedMaze.cols)
+            stepS.SetValue(selectedMaze.currentStep)
         
         algorithmB.RegisterClick()
         if algorithmB.clicked == True:
@@ -76,14 +77,20 @@ while running:
         sizeXS.Draw()
         if sizeXS.RegisterClick() == True:
             selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
+            selectedMaze.stateString = "."
+            selectedMaze.UpdateCurrentStep(1)
+            stepS.SetValue(selectedMaze.currentStep)
 
         sizeYS.Draw()
         if sizeYS.RegisterClick() == True:
             selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
+            selectedMaze.stateString = "."
+            selectedMaze.UpdateCurrentStep(1)
+            stepS.SetValue(selectedMaze.currentStep)
         
         stepS.Draw()
         if stepS.RegisterClick() == True:
-            selectedMaze.UpdateCurrentStep(selectedMaze.ReturnValue())
+            selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
         addStepB.RegisterClick()
         if addStepB.clicked == True and selectedMaze.endStep > selectedMaze.currentStep:

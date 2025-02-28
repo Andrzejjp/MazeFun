@@ -125,7 +125,10 @@ class Slider(Button):
     def SetValue(self,value):#sets the dash on the slider to a value in the range
         range = self.max - self.min
         temp = value - self.min
-        percent = temp/range
+        if range == 0:
+            percent = 0
+        else:
+            percent = temp/range
         total = self.barRect[2]-self.dashRect[2]
         self.ChangeRelativeDashPos(percent*total)
 
