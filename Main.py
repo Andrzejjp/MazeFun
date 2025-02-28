@@ -53,6 +53,9 @@ while running:
                     selectedCount += 1
         if selectedCount > 1:
             selectedMaze = None
+        if selectedMaze != None and selectedMaze.clickObj.selected == False:
+            selectedMaze = None
+            
 
     #deals with the selectedMaze's relevant buttons etc
     if selectedMaze != None:
@@ -108,7 +111,8 @@ while running:
             stepS.SetValue(selectedMaze.currentStep)
             subStepB.clicked = False
         subStepB.Draw()
-                
+        
+        selectedMaze.AlgorithmOverlay()
 
             
 

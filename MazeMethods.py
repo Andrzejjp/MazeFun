@@ -111,7 +111,35 @@ class Maze:
                 currentCell = self.cellArray[x][y]
                 for i in range (4):
                     currentCell.wallsList[i] = True
-
+    def ConvertFromStateString(self,step):
+        #extracts the relevant step#
+        instruction = ""
+        dotcount = 0
+        for i in self.stateString:
+            if i == ".":
+                dotcount += 1
+            if dotcount == step:
+                instruction += i
+        #finds the direction
+        dir = ""
+        match instruction[1] :
+            case "0":
+                dir = (1,0)
+            case "1":
+                dir = (-1,0)
+            case "2":
+                dir = (0,1)
+            case "3":
+                dir = (0,-1)
+        #finds the position
+        pos = ""
+        instruction = instruction[2:]
+        for i in range(len(instruction[2:])):
+            if instruction[2+i] == "x":
+                index = i+1
+        pos = (int(instruction[:index],0),int(instruction[index:],0))
+        return pos,dir
+        
     def ApplyStep(self,step): #applies the relevant step to the maze step goes 1->
         #extracts the relevant step#
         instruction = ""
@@ -201,27 +229,14 @@ class Maze:
         mousepos = pygame.mouse.get_pos()
         self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
         self.clickObj.mouseDisp = disp
-    ###somehow get all of this into clickable elements file
-    def ClickHandler(self):
-        noNoBox = ClickableElements((leftBarRect[0],leftBarRect[1]+30),(leftBarRect[2],leftBarRect[3]))
-        self.clickObj.RegisterClick()
-        if self.clickObj.clicked == True:
-            self.selected = True
-            self.clickObj.clicked = False
-        if self.clickObj.Hovering() == False and pygame.mouse.get_pressed()[0] == True and noNoBox.Hovering() == False:
-            self.selected = False
-        if self.selected == True and pygame.mouse.get_pressed()[0] == True and noNoBox.Hovering() == False:
-            self.MoveMaze()
-        
-        
-        if self.selected == True:
 
-            originX = self.origin[0]
-            originY = self.origin[1]
+    def AlgorithmOverlay(self,pastColour=(255,0,0),currentColour=0,FutureColour=0):#creates nice colours to show the algorithm better
+        stateString = self.stateString
+        overlaySurf = pygame.Surface((self.rows*self.px,self.cols*self.px),)
+        for i in range(1,self.currentStep):
+            pos = self.ConvertFromStateString(i)[0]
+            cellRect = pygame.Rect(pos,(self.px,self.px))
+            pygame.draw.rect(overlaySurf,pastColour,cellRect)
+        
+        pygame.Surface.blit(overlaySurf,self.surface,self.origin)
 
-            pygame.draw.line(self.surface,(255,0,0),(originX+self.rows*self.px-1,originY),(originX+self.rows*self.px-1,originY+self.cols*self.px-1)) # fix
-            pygame.draw.line(self.surface,(255,0,0),(originX,originY),(originX,originY+self.cols*self.px-1))
-            pygame.draw.line(self.surface,(255,0,0),(originX,originY),(originX+self.rows*self.px-1,originY,))
-            pygame.draw.line(self.surface,(255,0,0),(originX,originY+self.cols*self.px-1),(originX+self.rows*self.px-1,originY+self.cols*self.px-1))
-        
-        
