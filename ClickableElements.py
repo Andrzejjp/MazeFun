@@ -62,22 +62,29 @@ class MazeClick(ClickableElements):
         self.maze = maze
         self.mouseDisp = (0,0)
         self.valid = True
+        self.validR = True
         self.selected = False
         self.selectedIndicator = False
         
     def RegisterClick(self):
         if pygame.mouse.get_pressed()[0] == False:
             self.valid = True
+        
+        if pygame.mouse.get_pressed()[2] == False:
+            self.validR = True
 
-        if self.Hovering() == True and self.valid == True and pygame.mouse.get_pressed()[0] == True:
+        if self.Hovering() == True and self.valid == True and pygame.mouse.get_pressed()[0] == True and self.selected:
             self.valid = False
+            mousePos = pygame.mouse.get_pos()
+            self.mouseDisp = (mousePos[0]-self.maze.origin[0],mousePos[1]-self.maze.origin[1])
+        
+        if self.Hovering() == True and pygame.mouse.get_pressed()[2] == True and self.validR == True:
             if self.selected:
                 self.selected = False
             else:
                 self.selected = True
                 self.selectedIndicator = True
-            mousePos = pygame.mouse.get_pos()
-            self.mouseDisp = (mousePos[0]-self.maze.origin[0],mousePos[1]-self.maze.origin[1])
+            self.validR = False
         
         if self.valid == False:
             mousePos = pygame.mouse.get_pos()

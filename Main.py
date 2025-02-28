@@ -25,7 +25,7 @@ subStepB = Button((15,100),(30,20),win,"-1",15)
 sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
 sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
 
-
+selectedMaze = None
 
 ############################################################################################################################
 while running:
@@ -40,6 +40,26 @@ while running:
     for maze in mazeList:
         maze.DrawMazeThin()
         maze.clickObj.RegisterClick()
+        
+        #enforces 1 maze to be selected at a time
+        checkOneTrue = False
+        if maze.clickObj.selected == True and maze != selectedMaze:
+            selectedMaze = maze
+            for maze in mazeList:
+                if maze != selectedMaze:
+                    maze.clickObj.selected = False
+                if maze.clickObj.selected == True:
+                    checkOneTrue = True
+        if checkOneTrue == False:
+            selectedMaze = None
+
+    #deals with the selectedMaze's relevant buttons etc
+        
+
+        
+        
+
+
         if maze.clickObj.selected == True:
             if maze.clickObj.CheckSelect() == True:
                 sizeXS.SetValue(maze.rows)
@@ -50,7 +70,7 @@ while running:
                 maze.stateString = "."
                 maze.ClearMaze()
                 vList= []
-                DepthFirst(maze,(0,0),vList)
+                DepthFirst(maze,(round(maze.rows/2),0),vList)
                 maze.MakeEntrance()
                 maze.UpdateEndStep()
                 maze.UpdateCurrentStep(maze.endStep)
