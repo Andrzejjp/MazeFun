@@ -54,56 +54,50 @@ while running:
             selectedMaze = None
 
     #deals with the selectedMaze's relevant buttons etc
+    if selectedMaze != None:
+        if selectedMaze.clickObj.CheckSelect() == True:
+            sizeXS.SetValue(selectedMaze.rows)
+            sizeYS.SetValue(selectedMaze.cols)
         
+        algorithmB.RegisterClick()
+        if algorithmB.clicked == True:
+            selectedMaze.stateString = "."
+            selectedMaze.ClearMaze()
+            vList= []
+            DepthFirst(selectedMaze,(round(selectedMaze.rows/2),0),vList)
+            selectedMaze.MakeEntrance()
+            selectedMaze.UpdateEndStep()
+            selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
+            stepS.max = selectedMaze.endStep
+            stepS.SetValue(selectedMaze.endStep)
+            algorithmB.clicked = False
+        algorithmB.Draw()
 
+        sizeXS.Draw()
+        if sizeXS.RegisterClick() == True:
+            selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
+
+        sizeYS.Draw()
+        if sizeYS.RegisterClick() == True:
+            selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
         
-        
+        stepS.Draw()
+        if stepS.RegisterClick() == True:
+            selectedMaze.UpdateCurrentStep(selectedMaze.ReturnValue())
 
+        addStepB.RegisterClick()
+        if addStepB.clicked == True and selectedMaze.endStep > selectedMaze.currentStep:
+            selectedMaze.UpdateCurrentStep(selectedMaze.currentStep + 1)
+            stepS.SetValue(selectedMaze.currentStep)
+            addStepB.clicked = False
+        addStepB.Draw()
 
-        if maze.clickObj.selected == True:
-            if maze.clickObj.CheckSelect() == True:
-                sizeXS.SetValue(maze.rows)
-                sizeYS.SetValue(maze.cols)
-            ##contains buttonrunstuff unique to each maze
-            algorithmB.RegisterClick()
-            if algorithmB.clicked == True:
-                maze.stateString = "."
-                maze.ClearMaze()
-                vList= []
-                DepthFirst(maze,(round(maze.rows/2),0),vList)
-                maze.MakeEntrance()
-                maze.UpdateEndStep()
-                maze.UpdateCurrentStep(maze.endStep)
-                stepS.max = maze.endStep
-                stepS.SetValue(maze.endStep)
-                algorithmB.clicked = False
-            algorithmB.Draw()
-
-            sizeXS.Draw()
-            if sizeXS.RegisterClick() == True:
-                maze.UpdateSize(sizeXS.ReturnValue(),maze.cols)
-
-            sizeYS.Draw()
-            if sizeYS.RegisterClick() == True:
-                maze.UpdateSize(maze.rows,sizeYS.ReturnValue())
-            
-            stepS.Draw()
-            if stepS.RegisterClick() == True:
-                maze.UpdateCurrentStep(stepS.ReturnValue())
-
-            addStepB.RegisterClick()
-            if addStepB.clicked == True and maze.endStep > maze.currentStep:
-                maze.UpdateCurrentStep(maze.currentStep + 1)
-                stepS.SetValue(maze.currentStep)
-                addStepB.clicked = False
-            addStepB.Draw()
-
-            subStepB.RegisterClick()
-            if subStepB.clicked == True and 1 < maze.currentStep:
-                maze.UpdateCurrentStep(maze.currentStep - 1)
-                stepS.SetValue(maze.currentStep)
-                subStepB.clicked = False
-            subStepB.Draw()
+        subStepB.RegisterClick()
+        if subStepB.clicked == True and 1 < selectedMaze.currentStep:
+            selectedMaze.UpdateCurrentStep(selectedMaze.currentStep - 1)
+            stepS.SetValue(selectedMaze.currentStep)
+            subStepB.clicked = False
+        subStepB.Draw()
                 
 
             
