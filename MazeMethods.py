@@ -237,7 +237,7 @@ class Maze:
             pos = self.ConvertFromStateString(i)[0]
             cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
             pygame.draw.rect(overlaySurf,pColour,cellRect)
-        if self.endStep-self.currentStep > 0:
+        if self.endStep-self.currentStep > 1:
             pos = self.ConvertFromStateString(self.currentStep)[0]
             cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
             pygame.draw.rect(overlaySurf,cColour,cellRect)

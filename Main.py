@@ -4,7 +4,7 @@ from MazeMethods import Maze
 from ClickableElements import Button,Slider
 from MazeGenerators import *
 winSize = (1400,700)
-FPS = 60
+FPS = 0
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
