@@ -230,13 +230,24 @@ class Maze:
         self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
         self.clickObj.mouseDisp = disp
 
-    def AlgorithmOverlay(self,pastColour=(255,0,0),currentColour=0,FutureColour=0):#creates nice colours to show the algorithm better
-        stateString = self.stateString
+    def AlgorithmOverlay(self,pColour=(255,0,0),cColour=(0,0,255),fColour=(0,255,0)):#creates nice colours to show the algorithm better
         overlaySurf = pygame.Surface((self.rows*self.px,self.cols*self.px),)
+        #adds to the overlay
         for i in range(1,self.currentStep):
             pos = self.ConvertFromStateString(i)[0]
-            cellRect = pygame.Rect(pos,(self.px,self.px))
-            pygame.draw.rect(overlaySurf,pastColour,cellRect)
-        
-        overlaySurf.blit(self.surface,self.origin)
+            cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
+            pygame.draw.rect(overlaySurf,pColour,cellRect)
+        if self.endStep-self.currentStep > 0:
+            pos = self.ConvertFromStateString(self.currentStep)[0]
+            cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
+            pygame.draw.rect(overlaySurf,cColour,cellRect)
+
+            pos = self.ConvertFromStateString(self.currentStep+1)[0]
+            cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
+            pygame.draw.rect(overlaySurf,fColour,cellRect)
+
+        #sets up the overlay
+        pygame.Surface.set_colorkey(overlaySurf,(0,0,0))
+        pygame.Surface.set_alpha(overlaySurf,100)
+        pygame.Surface.blit(self.surface,overlaySurf,self.origin)
 
