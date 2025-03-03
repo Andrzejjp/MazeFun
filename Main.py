@@ -20,6 +20,7 @@ algorithmB = Button((10,40),(80,20),win,"ApplyAlgorithm",10)
 stepS = Slider((10,85),(80,5),win,"Step",1,1,15)
 addStepB = Button((55,100),(30,20),win,"+1",15)
 subStepB = Button((15,100),(30,20),win,"-1",15)
+deleteB = Button((10,670),(80,20),win,"Delete Maze",12,(200,200,200),(255,49,49))
 
 
 sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
@@ -118,6 +119,11 @@ while running:
             subStepB.clicked = False
         subStepB.Draw()
         
+        deleteB.RegisterClick()
+        if deleteB.clicked == True:
+            
+            deleteB.clicked = False
+        deleteB.Draw()
         # selectedMaze.AlgorithmOverlay()
 
             
