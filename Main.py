@@ -55,7 +55,13 @@ while running:
             selectedMaze = None
         if selectedMaze != None and selectedMaze.clickObj.selected == False:
             selectedMaze = None
-            
+        
+    #rearranges the list so the selected maze is drawn last
+    if selectedMaze != None:
+        for i in range(len(mazeList)):
+            if selectedMaze == mazeList[i]:
+                mazeList.append(mazeList[i])
+                mazeList.pop(i)
 
     #deals with the selectedMaze's relevant buttons etc
     if selectedMaze != None:
@@ -112,7 +118,7 @@ while running:
             subStepB.clicked = False
         subStepB.Draw()
         
-        selectedMaze.AlgorithmOverlay()
+        # selectedMaze.AlgorithmOverlay()
 
             
 
