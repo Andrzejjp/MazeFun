@@ -53,7 +53,6 @@ class Button(ClickableElements):
         tPos = (self.pos[0]+self.box[0]/2-fontsize[0]/2,self.pos[1]+self.box[1]/2-fontsize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
-
 class MazeClick(ClickableElements):
     def __init__(self,surf,maze):
         self.pos = maze.origin
@@ -190,3 +189,50 @@ class Slider(Button):
         textSize = self.font.size(text)
         tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]-textSize[1]-self.bRect[3])
         pygame.Surface.blit(self.surf,textSurf,tPos)
+
+class DropBox(ClickableElements):
+    def __init__(self,pos,box,surf,text,optionsList,colour=(200,200,200),hcolour=(230,230,230),fcolour=(0,0,0)):
+        super().__init__(pos,box)
+        self.surf = surf
+        self.text = text
+        self.options = optionsList
+        self.open = False
+        self.boxRect = pygame.Rect(self.pos,self.box)
+        self.colour = colour
+        self.hcolour = hcolour
+        self.fcolour = fcolour
+
+    def Hovering(self):
+        mousePos = pygame.mouse.get_pos()
+        if mousePos[0] >= self.boxRect[0] and mousePos[0] <= self.boxRect[0]+self.boxRect[2]:
+            if mousePos[1] >= self.boxRect[1] and mousePos[1] <= self.boxRect[1]+self.boxRect[3]:
+                return True
+            else:
+                return False
+        else :
+            return False
+    
+    def RegisterClick(self):
+
+        if pygame.mouse.get_pressed()[0] == False:
+            self.valid = True
+
+        if self.Hovering() == True and self.valid == True:
+            if pygame.mouse.get_pressed()[0]:
+                self.valid = False
+                self.clicked = True
+                if self.open:
+                    self.open = False
+                    self.boxRect = pygame.Rect(self.pos,self.box)
+                else:
+                    self.open = True
+                    self.boxRect = pygame.Rect(self.pos,(self.box[0],self.box[1]*len(self.options)))
+
+    def Draw(self):
+        if self.open:
+            pass
+        elif self.Hovering():
+            pygame.draw.rect(self.surf,self.hcolour,self.boxRect)
+        else:
+            pygame.draw.rect(self.surf,self.colour,self.boxRect)
+

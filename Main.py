@@ -1,7 +1,7 @@
 import pygame
 from StaticSurfs import DrawStatics
 from MazeMethods import Maze
-from ClickableElements import Button,Slider
+from ClickableElements import Button,Slider,DropBox
 from MazeGenerators import *
 winSize = (1400,700)
 FPS = 0
@@ -25,6 +25,8 @@ deleteB = Button((10,670),(80,20),win,"Delete Maze",12,(200,200,200),(255,49,49)
 
 sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
 sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
+
+algorithmD = DropBox((10,300),(80,20),win,"Algorithms",["hey","bro","digga"])
 
 selectedMaze = None
 
@@ -121,9 +123,13 @@ while running:
         
         deleteB.RegisterClick()
         if deleteB.clicked == True:
-            
+            mazeList.pop(len(mazeList)-1)
+            selectedMaze = None
             deleteB.clicked = False
         deleteB.Draw()
+
+        algorithmD.RegisterClick()
+        algorithmD.Draw()
         # selectedMaze.AlgorithmOverlay()
 
             
