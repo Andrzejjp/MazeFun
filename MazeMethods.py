@@ -47,7 +47,7 @@ class Maze:
 
     def UpdateOrigin(self,newOrigin):
         self.mRect = pygame.Rect(newOrigin,(self.rows*self.px,self.cols*self.px))
-        self.clickObj.pos = (newOrigin)
+        self.clickObj.rect = pygame.Rect((newOrigin[0],newOrigin[1]),(self.clickObj.rect[2],self.clickObj.rect[3]))
         self.origin = newOrigin
 
     def AddtoStateString(self,cellPos,direction): # direction followed by x and y in hex

@@ -13,20 +13,18 @@ pygame.display.set_caption("MazeFun")
 
 mazeList = []
 
-newMazeB = Button((10,5),(80,20),win,"New Maze",15)
+newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
 
 
-algorithmB = Button((10,40),(80,20),win,"ApplyAlgorithm",10)
-stepS = Slider((10,85),(80,5),win,"Step",1,1,15)
-addStepB = Button((55,100),(30,20),win,"+1",15)
-subStepB = Button((15,100),(30,20),win,"-1",15)
-deleteB = Button((10,670),(80,20),win,"Delete Maze",12,(200,200,200),(255,49,49))
+algorithmB = Button(win,(10,40),(80,20),"ApplyAlgorithm",10)
+addStepB = Button(win,(55,100),(30,20),"+1",15)
+subStepB = Button(win,(15,100),(30,20),"-1",15)
+deleteB = Button(win,(10,670),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
 
 
-sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
-sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
-
-algorithmD = DropBox((10,300),(80,20),win,"Algorithms",["hey","bro","digga"])
+# stepS = Slider((10,85),(80,5),win,"Step",1,1,15)
+# sizeXS = Slider((10,400),(80,5),win,"sizeX",32,1,15)
+# sizeYS = Slider((10,435),(80,5),win,"sizeY",32,1,15)
 
 selectedMaze = None
 
@@ -35,10 +33,9 @@ selectedMaze = None
 while running:
     DrawStatics(win)
 
-    newMazeB.RegisterClick()
-    if newMazeB.clicked == True:
+   
+    if newMazeB.Clicked():
         mazeList.append(Maze(win))
-        newMazeB.clicked = False
     newMazeB.Draw()
 
     for maze in mazeList:
@@ -68,13 +65,12 @@ while running:
 
     #deals with the selectedMaze's relevant buttons etc
     if selectedMaze != None:
-        if selectedMaze.clickObj.CheckSelect() == True:
-            sizeXS.SetValue(selectedMaze.rows)
-            sizeYS.SetValue(selectedMaze.cols)
-            stepS.SetValue(selectedMaze.currentStep)
+        # if selectedMaze.clickObj.CheckSelect() == True:
+        #     sizeXS.SetValue(selectedMaze.rows)
+        #     sizeYS.SetValue(selectedMaze.cols)
+        #     stepS.SetValue(selectedMaze.currentStep)
         
-        algorithmB.RegisterClick()
-        if algorithmB.clicked == True:
+        if algorithmB.Clicked():
             selectedMaze.stateString = "."
             selectedMaze.ClearMaze()
             vList= []
@@ -82,54 +78,46 @@ while running:
             selectedMaze.MakeEntrance()
             selectedMaze.UpdateEndStep()
             selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
-            stepS.max = selectedMaze.endStep
-            stepS.SetValue(selectedMaze.endStep)
-            algorithmB.clicked = False
+            # stepS.max = selectedMaze.endStep
+            # stepS.SetValue(selectedMaze.endStep)
         algorithmB.Draw()
 
-        sizeXS.Draw()
-        if sizeXS.RegisterClick() == True:
-            selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
-            selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
-            stepS.max = 1
-            stepS.SetValue(selectedMaze.currentStep)
+        # sizeXS.Draw()
+        # if sizeXS.RegisterClick() == True:
+        #     selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
+        #     selectedMaze.stateString = "."
+        #     selectedMaze.UpdateCurrentStep(1)
+        #     stepS.max = 1
+        #     stepS.SetValue(selectedMaze.currentStep)
 
-        sizeYS.Draw()
-        if sizeYS.RegisterClick() == True:
-            selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
-            selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
-            stepS.max = 1
-            stepS.SetValue(selectedMaze.currentStep)
+        # sizeYS.Draw()
+        # if sizeYS.RegisterClick() == True:
+        #     selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
+        #     selectedMaze.stateString = "."
+        #     selectedMaze.UpdateCurrentStep(1)
+        #     stepS.max = 1
+        #     stepS.SetValue(selectedMaze.currentStep)
         
-        stepS.Draw()
-        if stepS.RegisterClick() == True:
-            selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
+        # stepS.Draw()
+        # if stepS.RegisterClick() == True:
+        #     selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
-        addStepB.RegisterClick()
-        if addStepB.clicked == True and selectedMaze.endStep > selectedMaze.currentStep:
+        if addStepB.Clicked() and selectedMaze.endStep > selectedMaze.currentStep:
             selectedMaze.UpdateCurrentStep(selectedMaze.currentStep + 1)
-            stepS.SetValue(selectedMaze.currentStep)
-            addStepB.clicked = False
+            # stepS.SetValue(selectedMaze.currentStep)
         addStepB.Draw()
 
-        subStepB.RegisterClick()
-        if subStepB.clicked == True and 1 < selectedMaze.currentStep:
+        if subStepB.Clicked() and 1 < selectedMaze.currentStep:
             selectedMaze.UpdateCurrentStep(selectedMaze.currentStep - 1)
-            stepS.SetValue(selectedMaze.currentStep)
-            subStepB.clicked = False
+            # stepS.SetValue(selectedMaze.currentStep)
         subStepB.Draw()
         
-        deleteB.RegisterClick()
-        if deleteB.clicked == True:
+        if deleteB.Clicked():
             mazeList.pop(len(mazeList)-1)
             selectedMaze = None
-            deleteB.clicked = False
         deleteB.Draw()
 
-        algorithmD.RegisterClick()
-        algorithmD.Draw()
+
         # selectedMaze.AlgorithmOverlay()
 
             

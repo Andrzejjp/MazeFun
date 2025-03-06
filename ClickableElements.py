@@ -4,59 +4,57 @@ import pygame
 #parent class to everything that requires mouse click
 class ClickableElements:
     def __init__(self,pos,box):
-        self.pos = pos
-        self.box = box
-        self.valid = False
-        self.clicked = False
+        self.rect = pygame.Rect(pos,box)
+        self.clicking = False # ensures only one click is registered even if lmb is held
         
-    def Hovering(self):
+    def Hovering(self):#checks that the mouse is over the element
         mousePos = pygame.mouse.get_pos()
-        if mousePos[0] >= self.pos[0] and mousePos[0] <= self.pos[0]+self.box[0]:
-            if mousePos[1] >= self.pos[1] and mousePos[1] <= self.pos[1]+self.box[1]:
+        if mousePos[0] >= self.rect[0] and mousePos[0] <= self.rect[0]+self.rect[2]:
+            if mousePos[1] >= self.rect[1] and mousePos[1] <= self.rect[1]+self.rect[3]:
                 return True
             else:
                 return False
         else :
             return False
 
-    def RegisterClick(self):
+    def Clicked(self):#returns true if the element was clicked 
         if pygame.mouse.get_pressed()[0] == False:
-            self.valid = True
+            self.clicking = False
 
-        if self.Hovering() == True and self.valid == True:
-            if pygame.mouse.get_pressed()[0]:
-                self.valid = False
-                self.clicked = True
+        if self.Hovering() == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
+            self.clicking = True
+            return True
 
+        return False
 
 class Button(ClickableElements):
-    def __init__(self,pos,box,surf,text,fsize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
-        super().__init__(pos,box)
+    def __init__(self,surface,pos,box,text,fontSize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
         pygame.font.init()
-        self.surf = surf
-        self.fsize = fsize
+        self.surf = surface
+        super().__init__(pos,box)
+        self.fsize = fontSize
         self.font = pygame.font.SysFont("Courier New", self.fsize)
         self.colour = colour
         self.hcolour = hcolour
         self.fcolour = fcolour
         self.text = text
-        self.bRect = pygame.Rect(self.pos,self.box)
 
     def Draw(self):
         if self.Hovering() == True:
-            pygame.draw.rect(self.surf,self.hcolour,self.bRect)
+            pygame.draw.rect(self.surf,self.hcolour,self.rect)
         else:
-            pygame.draw.rect(self.surf,self.colour,self.bRect)
+            pygame.draw.rect(self.surf,self.colour,self.rect)
         textSurf = self.font.render(self.text,True,self.fcolour)
         #centers the text on the button
         fontsize = self.font.size(self.text)
-        tPos = (self.pos[0]+self.box[0]/2-fontsize[0]/2,self.pos[1]+self.box[1]/2-fontsize[1]/2)
+        tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.rect[3]/2-fontsize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
 class MazeClick(ClickableElements):
     def __init__(self,surf,maze):
         self.pos = maze.origin
         self.box = (maze.rows*maze.px,maze.cols*maze.px)
+        self.rect = pygame.Rect(self.pos,self.box)
         self.surf = surf
         self.maze = maze
         self.mouseDisp = (0,0)
@@ -191,48 +189,4 @@ class Slider(Button):
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
 class DropBox(ClickableElements):
-    def __init__(self,pos,box,surf,text,optionsList,colour=(200,200,200),hcolour=(230,230,230),fcolour=(0,0,0)):
-        super().__init__(pos,box)
-        self.surf = surf
-        self.text = text
-        self.options = optionsList
-        self.open = False
-        self.boxRect = pygame.Rect(self.pos,self.box)
-        self.colour = colour
-        self.hcolour = hcolour
-        self.fcolour = fcolour
-
-    def Hovering(self):
-        mousePos = pygame.mouse.get_pos()
-        if mousePos[0] >= self.boxRect[0] and mousePos[0] <= self.boxRect[0]+self.boxRect[2]:
-            if mousePos[1] >= self.boxRect[1] and mousePos[1] <= self.boxRect[1]+self.boxRect[3]:
-                return True
-            else:
-                return False
-        else :
-            return False
-    
-    def RegisterClick(self):
-
-        if pygame.mouse.get_pressed()[0] == False:
-            self.valid = True
-
-        if self.Hovering() == True and self.valid == True:
-            if pygame.mouse.get_pressed()[0]:
-                self.valid = False
-                self.clicked = True
-                if self.open:
-                    self.open = False
-                    self.boxRect = pygame.Rect(self.pos,self.box)
-                else:
-                    self.open = True
-                    self.boxRect = pygame.Rect(self.pos,(self.box[0],self.box[1]*len(self.options)))
-
-    def Draw(self):
-        if self.open:
-            pass
-        elif self.Hovering():
-            pygame.draw.rect(self.surf,self.hcolour,self.boxRect)
-        else:
-            pygame.draw.rect(self.surf,self.colour,self.boxRect)
-
+    pass
