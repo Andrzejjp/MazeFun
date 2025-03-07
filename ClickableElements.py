@@ -104,12 +104,12 @@ class MazeClick(ClickableElements):
             return True
 
 class Slider(Button):
-    def __init__(self,pos,box,surf,text,max,min,fsize= 20,colour= (200,200,200),hcolour=(230,30,30),fcolour= (0,0,0)):
-        super().__init__(pos,box,surf,text,fsize,colour,hcolour,fcolour)
+    def __init__(self,surf,pos,box,text,max,min,fsize= 20,colour= (200,200,200),hcolour=(230,30,30),fcolour= (0,0,0)):
+        super().__init__(surf,pos,box,text,fsize,colour,hcolour,fcolour)
         pygame.font.init()
         self.relativeDashPos = 0
-        self.barRect = self.bRect
-        self.dashRect = pygame.Rect((self.barRect[0]+self.relativeDashPos,self.barRect[1]+self.barRect[3]/2-self.box[1]*2),(box[1]*2,box[1]*4))
+        self.barRect = self.rect
+        self.dashRect = pygame.Rect((self.barRect[0]+self.relativeDashPos,self.barRect[1]+self.barRect[3]/2-self.barRect[3]*2),(box[1]*2,box[1]*4))
         self.mouseDisp = 0
         self.max = max
         self.min = min
@@ -151,7 +151,6 @@ class Slider(Button):
         #checks for letting go
         if pygame.mouse.get_pressed()[0] == False and self.valid == False:
             self.valid = True
-            self.clicked = False
             return True
             
 
@@ -159,9 +158,8 @@ class Slider(Button):
             self.valid = False
             mousePos = pygame.mouse.get_pos()[0]
             self.mouseDisp = (mousePos-self.barRect[0]-self.relativeDashPos)
-            self.clicked = True
 
-        if self.clicked == True:
+        if self.valid == False:
             mousePos = pygame.mouse.get_pos()[0]
             staticPos = self.barRect[0]+self.mouseDisp
             self.ChangeRelativeDashPos(mousePos-staticPos)
@@ -172,6 +170,7 @@ class Slider(Button):
 
     def Draw(self):
         dashRect = self.dashRect
+        self.bRect = self.barRect
         pygame.draw.rect(self.surf,self.colour,self.bRect)
 
         if self.Hovering() == True:
@@ -182,11 +181,40 @@ class Slider(Button):
         # All the text
         text = self.text+":"+str(self.ReturnValue())
         textSurf = self.font.render(text,True,self.fcolour)
-        minSurf = self.font.render(str(self.min),True,self.fcolour)
-        maxSurf = self.font.render(str(self.max),True,self.fcolour)
         textSize = self.font.size(text)
-        tPos = (self.pos[0]+self.box[0]/2-textSize[0]/2,self.pos[1]-textSize[1]-self.bRect[3])
+        tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]-textSize[1]-self.bRect[3])
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
-class DropBox(ClickableElements):
-    pass
+class DropBox(Button):
+    def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(200,200,200),hcolour=(230,230,230),fcolour=(0,0,0)):
+        super().__init__(surf,pos,box,text,fontSize,colour,hcolour,fcolour)
+        self.box = box
+        self.options = optionsList
+        self.open = False
+
+
+    def Clicked(self):
+        if pygame.mouse.get_pressed()[0] == False:
+            self.clicking = False
+
+        if self.Hovering() == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
+            self.clicking = True
+            if self.open:
+                self.open = False
+                self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1]) 
+            else:
+                self.open = True
+                self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1] + self.box[1]*len(self.options))
+        
+    def Draw(self):
+        if self.Hovering() == True:
+            pygame.draw.rect(self.surf,self.hcolour,self.rect)
+        else:
+            pygame.draw.rect(self.surf,self.colour,self.rect)
+        textSurf = self.font.render(self.text,True,self.fcolour)
+        #centers the text on the button
+        fontsize = self.font.size(self.text)
+        tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
+        pygame.Surface.blit(self.surf,textSurf,tPos)
+        
+
