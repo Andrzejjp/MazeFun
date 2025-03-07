@@ -190,7 +190,18 @@ class DropBox(Button):
         super().__init__(surf,pos,box,text,fontSize,colour,hcolour,fcolour)
         self.box = box
         self.options = optionsList
-        self.open = False
+        self.open = False #toggles if the dropboxes options are visable
+
+    def OptionFromY(self,y): # takes y value of mouse and returns the index of an option in options list
+        ybox = self.box[1]
+        ypos = self.rect[1]
+        for i in range(2,len(self.options)+2):
+            start = ypos + ybox*(i-1)
+            end = ypos + ybox*(i)
+            if start <= y and end >= y:
+                print(self.options[i-2])
+
+
 
 
     def Clicked(self):
@@ -202,6 +213,7 @@ class DropBox(Button):
             if self.open:
                 self.open = False
                 self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1]) 
+                self.OptionFromY(pygame.mouse.get_pos()[1])
             else:
                 self.open = True
                 self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1] + self.box[1]*len(self.options))
@@ -211,10 +223,15 @@ class DropBox(Button):
             pygame.draw.rect(self.surf,self.hcolour,self.rect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.rect)
-        textSurf = self.font.render(self.text,True,self.fcolour)
+
+        if self.open == True:
+            textSurf = self.font.render((self.text+"-"),True,self.fcolour)
+
+        else:
+            textSurf = self.font.render((self.text+"^"),True,self.fcolour)
+        
         #centers the text on the button
         fontsize = self.font.size(self.text)
         tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
-        
 
