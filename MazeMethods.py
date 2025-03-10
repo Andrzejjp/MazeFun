@@ -1,6 +1,5 @@
 import pygame
 from ClickableElements import MazeClick,ClickableElements
-from StaticSurfs import leftBarRect
 
 
 class MazeCell:
