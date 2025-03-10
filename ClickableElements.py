@@ -211,19 +211,23 @@ class DropBox(Button):
             if self.open:
                 self.open = False
                 self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1]) 
-                print(self.OptionFromY(pygame.mouse.get_pos()[1]))
+                self.currentOption = self.OptionFromY(pygame.mouse.get_pos()[1])
             else:
                 self.open = True
                 self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1] + self.box[1]*len(self.options))
         
     def Draw(self):
+        option = ""
+        if self.currentOption != None:
+            option = (self.options[self.currentOption])[0]
         if self.Hovering() == True:
             pygame.draw.rect(self.surf,self.hcolour,self.rect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.rect)
 
         if self.open == True:
-            textSurf = self.font.render((self.text+"-"),True,self.fcolour)
+            combinedText = self.text+":"+option+"-"
+            textSurf = self.font.render(combinedText,True,self.fcolour)
             # handles the options text 
             for i in range(1,len(self.options)+1):
                 text = self.options[i-1]
@@ -233,10 +237,11 @@ class DropBox(Button):
                 pygame.Surface.blit(self.surf,otherTextSurf,tPos)
 
         else:
-            textSurf = self.font.render((self.text+"^"),True,self.fcolour)
+            combinedText = self.text+":"+option+"^"
+            textSurf = self.font.render(combinedText,True,self.fcolour)
         
         #centers the text on the button
-        fontsize = self.font.size(self.text)
+        fontsize = self.font.size(combinedText)
         tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
 

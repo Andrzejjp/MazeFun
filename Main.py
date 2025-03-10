@@ -1,5 +1,4 @@
 import pygame
-from StaticSurfs import DrawStatics
 from MazeMethods import Maze
 from ClickableElements import Button,Slider,DropBox
 from MazeGenerators import *
@@ -8,7 +7,7 @@ FPS = 0
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
-win = pygame.display.set_mode((winSize[0], winSize[1]))
+win = pygame.display.set_mode((winSize[0], winSize[1]),pygame.RESIZABLE)
 pygame.display.set_caption("MazeFun")
 
 mazeList = []
@@ -24,14 +23,30 @@ stepS = Slider(win,(10,85),(80,5),"Step",1,1,15)
 sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
-modeD = DropBox(win,(10,200),(80,20),"Mode",["hey","bro","sigma"],15)
+modeD = DropBox(win,(10,200),(80,20),"Mode",["Generate","Solve"],15)
 
 selectedMaze = None
+
+# functons
+def DrawStaticSurfs(surface):
+
+    surfSize = surface.get_size()
+
+    leftBarRect = pygame.Rect(((0,0),(100,surfSize[1])))
+    topBarRect = pygame.Rect(((0,0),(surfSize[0],30)))
+
+    pygame.display.update(leftBarRect)
+    pygame.display.update(topBarRect)
+
+    surface.fill("#BCBEBC")
+    pygame.draw.rect(surface,("#DEDEDE"),leftBarRect)
+    pygame.draw.rect(surface,("#F5F5F5"),topBarRect)
+
 
 
 ############################################################################################################################
 while running:
-    DrawStatics(win)
+    DrawStaticSurfs(win)
 
    
     if newMazeB.Clicked():
