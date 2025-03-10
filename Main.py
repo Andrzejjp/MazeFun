@@ -23,7 +23,7 @@ stepS = Slider(win,(10,85),(80,5),"Step",1,1,15)
 sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
-modeD = DropBox(win,(10,200),(80,20),"Mode",["Generate","Solve"],15)
+modeD = DropBox(win,(100,5),(80,20),"Mode",["Generate","Solve"],15)
 
 selectedMaze = None
 
@@ -42,7 +42,11 @@ def DrawStaticSurfs(surface):
     pygame.draw.rect(surface,("#DEDEDE"),leftBarRect)
     pygame.draw.rect(surface,("#F5F5F5"),topBarRect)
 
+def GenerateMaze(surface):
+    pass
 
+def SolveMaze(surface):
+    pass
 
 ############################################################################################################################
 while running:
