@@ -72,7 +72,7 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
         algorithmB.Draw()
 
         sizeXS.Draw()
-        if sizeXS.RegisterClick() == True:
+        if sizeXS.Clicked() == True:
             selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
             selectedMaze.stateString = "."
             selectedMaze.UpdateCurrentStep(1)
@@ -80,7 +80,7 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
             stepS.SetValue(selectedMaze.currentStep)
 
         sizeYS.Draw()
-        if sizeYS.RegisterClick() == True:
+        if sizeYS.Clicked() == True:
             selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
             selectedMaze.stateString = "."
             selectedMaze.UpdateCurrentStep(1)
@@ -88,7 +88,7 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
             stepS.SetValue(selectedMaze.currentStep)
         
         stepS.Draw()
-        if stepS.RegisterClick() == True:
+        if stepS.Clicked() == True:
             selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
         if addStepB.Clicked() and selectedMaze.endStep > selectedMaze.currentStep:

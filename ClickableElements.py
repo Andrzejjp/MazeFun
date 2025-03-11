@@ -6,10 +6,10 @@ class ClickableElements:
     def __init__(self,pos,box):
         self.rect = pygame.Rect(pos,box)
         self.clicking = False # ensures only one click is registered even if lmb is held
-        self.clickable = True # used to deactivate the functionality of the element
+        self.active = True # used to deactivate the functionality of the element
         
     def Hovering(self,rect):#checks if the mouse is hovering over a rect
-        if self.clickable == True:
+        if self.active == True:
             mousePos = pygame.mouse.get_pos()
             if mousePos[0] >= rect[0] and mousePos[0] <= rect[0]+rect[2]:
                 if mousePos[1] >= rect[1] and mousePos[1] <= rect[1]+rect[3]:
@@ -48,7 +48,7 @@ class Button(ClickableElements):
 
 class MazeClick(ClickableElements):
     def __init__(self,surf,maze):
-        self.clickable = True
+        self.active = True
         self.pos = maze.origin
         self.box = (maze.rows*maze.px,maze.cols*maze.px)
         self.rect = pygame.Rect(self.pos,self.box)
@@ -133,7 +133,11 @@ class Slider(Button):
         value = self.min+(total*sliderPercent)
         return(round(value))
 
-    def RegisterClick(self):
+    def Clicked(self):
+
+        leftRect = pygame.Rect((self.barRect[0],self.barRect[1]),(self.dashRect[0]-self.barRect[0],self.barRect[3]))
+        rightRect = pygame.Rect((self.dashRect[0]+self.dashRect[2],self.barRect[1]),(self.barRect[0]+self.barRect[2]-self.dashRect[0]-self.dashRect[2],self.barRect[3]))
+
         #checks for letting go
         if pygame.mouse.get_pressed()[0] == False and self.clicking == True:
             self.clicking = False
@@ -144,6 +148,12 @@ class Slider(Button):
             self.clicking = True
             mousePos = pygame.mouse.get_pos()[0]
             self.mouseDisp = (mousePos-self.barRect[0]-self.relativeDashPos)
+
+        if self.Hovering(leftRect) == True and pygame.mouse.get_pressed()[0] == True and self.clicking == False:
+            self.clicking = True
+        
+        if self.Hovering(rightRect) == True and pygame.mouse.get_pressed()[0] == True and self.clicking == False:
+            self.clicking = True
 
         if self.clicking == True:
             mousePos = pygame.mouse.get_pos()[0]
@@ -174,10 +184,19 @@ class Slider(Button):
 class DropBox(Button):
     def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(200,200,200),hcolour=(230,230,230),fcolour=(0,0,0)):
         super().__init__(surf,pos,box,text,fontSize,colour,hcolour,fcolour)
-        self.box = box
         self.options = optionsList
         self.open = False #toggles if the dropboxes options are visable
         self.currentOption = None
+        self.optionsRects = self.GenerateOptionsRects()
+
+    def GenerateOptionsRects(self):
+        rectList = []
+        for i in range(1,len(self.options)):
+            rect = pygame.Rect((self.rect[0],self.rect[1]+(self.rect[3]*i),self.rect[2],self.rect[3]))
+            rectList.append(rect)
+        return rectList
+
+
 
     def OptionFromY(self,y): # takes y value of mouse and returns the index of an option in options list
         ybox = self.box[1]
@@ -202,32 +221,34 @@ class DropBox(Button):
                 self.open = True
                 self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1] + self.box[1]*len(self.options))
         
-    def Draw(self):
-        option = ""
-        if self.currentOption != None:
-            option = (self.options[self.currentOption])[0]
-        if self.Hovering(self.rect) == True:
-            pygame.draw.rect(self.surf,self.hcolour,self.rect)
-        else:
-            pygame.draw.rect(self.surf,self.colour,self.rect)
-
-        if self.open == True:
-            combinedText = self.text+":"+option+"-"
-            textSurf = self.font.render(combinedText,True,self.fcolour)
-            # handles the options text 
-            for i in range(1,len(self.options)+1):
-                text = self.options[i-1]
-                textSize = self.font.size(text)
-                tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]+self.box[1]*i+self.box[1]/2-textSize[1]/2)
-                otherTextSurf = self.font.render((text),True,self.fcolour)
-                pygame.Surface.blit(self.surf,otherTextSurf,tPos)
-
-        else:
-            combinedText = self.text+":"+option+"^"
-            textSurf = self.font.render(combinedText,True,self.fcolour)
         
-        #centers the text on the button
-        fontsize = self.font.size(combinedText)
-        tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
-        pygame.Surface.blit(self.surf,textSurf,tPos)
+        
+    # def Draw(self):
+    #     option = ""
+    #     if self.currentOption != None:
+    #         option = (self.options[self.currentOption])[0]
+    #     if self.Hovering(self.rect) == True:
+    #         pygame.draw.rect(self.surf,self.hcolour,self.rect)
+    #     else:
+    #         pygame.draw.rect(self.surf,self.colour,self.rect)
+
+    #     if self.open == True:
+    #         combinedText = self.text+":"+option+"-"
+    #         textSurf = self.font.render(combinedText,True,self.fcolour)
+    #         # handles the options text 
+    #         for i in range(1,len(self.options)+1):
+    #             text = self.options[i-1]
+    #             textSize = self.font.size(text)
+    #             tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]+self.box[1]*i+self.box[1]/2-textSize[1]/2)
+    #             otherTextSurf = self.font.render((text),True,self.fcolour)
+    #             pygame.Surface.blit(self.surf,otherTextSurf,tPos)
+
+    #     else:
+    #         combinedText = self.text+":"+option+"^"
+    #         textSurf = self.font.render(combinedText,True,self.fcolour)
+        
+    #     #centers the text on the button
+    #     fontsize = self.font.size(combinedText)
+    #     tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
+    #     pygame.Surface.blit(self.surf,textSurf,tPos)
 
