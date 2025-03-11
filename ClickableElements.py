@@ -1,31 +1,27 @@
 import pygame
 
 
-#parent class to everything that requires mouse click
+# abstract class for registering clicked inputs
 class ClickableElements:
     def __init__(self,pos,box):
         self.rect = pygame.Rect(pos,box)
         self.clicking = False # ensures only one click is registered even if lmb is held
+        self.clickable = True # used to deactivate the functionality of the element
         
-    def Hovering(self):#checks that the mouse is over the element
-        mousePos = pygame.mouse.get_pos()
-        if mousePos[0] >= self.rect[0] and mousePos[0] <= self.rect[0]+self.rect[2]:
-            if mousePos[1] >= self.rect[1] and mousePos[1] <= self.rect[1]+self.rect[3]:
-                return True
-            else:
-                return False
-        else :
-            return False
+    def Hovering(self,rect):#checks if the mouse is hovering over a rect
+        if self.clickable == True:
+            mousePos = pygame.mouse.get_pos()
+            if mousePos[0] >= rect[0] and mousePos[0] <= rect[0]+rect[2]:
+                if mousePos[1] >= rect[1] and mousePos[1] <= rect[1]+rect[3]:
+                    return True
 
     def Clicked(self):#returns true if the element was clicked 
         if pygame.mouse.get_pressed()[0] == False:
             self.clicking = False
 
-        if self.Hovering() == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
+        if self.Hovering(self.rect) == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
             self.clicking = True
             return True
-
-        return False
 
 class Button(ClickableElements):
     def __init__(self,surface,pos,box,text,fontSize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
@@ -40,7 +36,7 @@ class Button(ClickableElements):
         self.text = text
 
     def Draw(self):
-        if self.Hovering() == True:
+        if self.Hovering(self.rect) == True:
             pygame.draw.rect(self.surf,self.hcolour,self.rect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.rect)
@@ -52,30 +48,31 @@ class Button(ClickableElements):
 
 class MazeClick(ClickableElements):
     def __init__(self,surf,maze):
+        self.clickable = True
         self.pos = maze.origin
         self.box = (maze.rows*maze.px,maze.cols*maze.px)
         self.rect = pygame.Rect(self.pos,self.box)
         self.surf = surf
         self.maze = maze
         self.mouseDisp = (0,0)
-        self.valid = True
+        self.clicking = False
         self.validR = True
         self.selected = False
         self.selectedIndicator = False
         
     def RegisterClick(self):
         if pygame.mouse.get_pressed()[0] == False:
-            self.valid = True
+            self.clicking = False
         
         if pygame.mouse.get_pressed()[2] == False:
             self.validR = True
 
-        if self.Hovering() == True and self.valid == True and pygame.mouse.get_pressed()[0] == True and self.selected:
-            self.valid = False
+        if self.Hovering(self.rect) == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True and self.selected:
+            self.clicking = True
             mousePos = pygame.mouse.get_pos()
             self.mouseDisp = (mousePos[0]-self.maze.origin[0],mousePos[1]-self.maze.origin[1])
         
-        if self.Hovering() == True and pygame.mouse.get_pressed()[2] == True and self.validR == True:
+        if self.Hovering(self.rect) == True and pygame.mouse.get_pressed()[2] == True and self.validR == True:
             if self.selected:
                 self.selected = False
             else:
@@ -83,7 +80,7 @@ class MazeClick(ClickableElements):
                 self.selectedIndicator = True
             self.validR = False
         
-        if self.valid == False:
+        if self.clicking == True:
             mousePos = pygame.mouse.get_pos()
             self.maze.UpdateOrigin((mousePos[0]-self.mouseDisp[0],mousePos[1]-self.mouseDisp[1]))
         
@@ -113,7 +110,7 @@ class Slider(Button):
         self.mouseDisp = 0
         self.max = max
         self.min = min
-        self.valid = True
+        self.clicking = False
 
     def ChangeRelativeDashPos(self,newPos):#new pos is the Relative pos
         self.relativeDashPos = newPos
@@ -136,30 +133,19 @@ class Slider(Button):
         value = self.min+(total*sliderPercent)
         return(round(value))
 
-    def Hovering(self):
-        dashRect = self.dashRect
-        mousePos = pygame.mouse.get_pos()
-        if mousePos[0] >= self.dashRect[0] and mousePos[0] <= self.dashRect[0]+self.dashRect[2]:
-            if mousePos[1] >= self.dashRect[1] and mousePos[1] <= self.dashRect[1]+self.dashRect[3]:
-                return True
-            else:
-                return False
-        else :
-            return False
-    
     def RegisterClick(self):
         #checks for letting go
-        if pygame.mouse.get_pressed()[0] == False and self.valid == False:
-            self.valid = True
+        if pygame.mouse.get_pressed()[0] == False and self.clicking == True:
+            self.clicking = False
             return True
             
 
-        if self.Hovering() == True and pygame.mouse.get_pressed()[0] == True and self.valid == True:
-            self.valid = False
+        if self.Hovering(self.dashRect) == True and pygame.mouse.get_pressed()[0] == True and self.clicking == False:
+            self.clicking = True
             mousePos = pygame.mouse.get_pos()[0]
             self.mouseDisp = (mousePos-self.barRect[0]-self.relativeDashPos)
 
-        if self.valid == False:
+        if self.clicking == True:
             mousePos = pygame.mouse.get_pos()[0]
             staticPos = self.barRect[0]+self.mouseDisp
             self.ChangeRelativeDashPos(mousePos-staticPos)
@@ -173,7 +159,7 @@ class Slider(Button):
         self.bRect = self.barRect
         pygame.draw.rect(self.surf,self.colour,self.bRect)
 
-        if self.Hovering() == True:
+        if self.Hovering(dashRect) == True:
             pygame.draw.rect(self.surf,self.hcolour,dashRect)
         else:
             pygame.draw.rect(self.surf,self.colour,dashRect)
@@ -206,7 +192,7 @@ class DropBox(Button):
         if pygame.mouse.get_pressed()[0] == False:
             self.clicking = False
 
-        if self.Hovering() == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
+        if self.Hovering(self.rect) == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
             self.clicking = True
             if self.open:
                 self.open = False
@@ -220,7 +206,7 @@ class DropBox(Button):
         option = ""
         if self.currentOption != None:
             option = (self.options[self.currentOption])[0]
-        if self.Hovering() == True:
+        if self.Hovering(self.rect) == True:
             pygame.draw.rect(self.surf,self.hcolour,self.rect)
         else:
             pygame.draw.rect(self.surf,self.colour,self.rect)
