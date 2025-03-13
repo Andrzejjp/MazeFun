@@ -206,6 +206,7 @@ class DropBox(Button):
                 self.open = False
             else:
                 self.open = True
+            return True
         
         if self.open:
             for i in range(len(self.optionsRects)):
@@ -213,6 +214,7 @@ class DropBox(Button):
                     self.clicking = True
                     self.currentOption = i
                     self.open = False
+                    return True
 
 
     
@@ -228,12 +230,36 @@ class DropBox(Button):
             pygame.draw.rect(self.surf,self.colour,self.rect)
     
         if self.open:
-            for rect in self.optionsRects:
+
+            # sets text for cover button
+            text = self.text+":"+selectedOption+"-"
+
+            for  i in range(len(self.options)):
+                # centers options text on rect
+                rect = self.optionsRects[i]
+                otext = self.options[i]
+                otextSurf = self.font.render(otext,True,self.fcolour)
+                otextSize = self.font.size(otext)
+                otPos = (rect[0]+rect[2]/2-otextSize[0]/2,rect[1]+rect[3]/2-otextSize[1]/2)
+
                 if self.Hovering(rect):
                     pygame.draw.rect(self.surf,self.hcolour,rect)
                 else:
                     pygame.draw.rect(self.surf,self.colour,rect)
-        
+                
+                pygame.Surface.blit(self.surf,otextSurf,otPos)
+        else:
+
+            #sets text for cover button
+            text = self.text+":"+selectedOption+"^"
+
+        #centers cover text
+        textSurf = self.font.render(text,True,self.fcolour)
+        textSize = self.font.size(text)
+        tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]+self.rect[3]/2-textSize[1]/2)
+        pygame.Surface.blit(self.surf,textSurf,tPos)
+
+
         
     # def Draw(self):
     #     option = ""

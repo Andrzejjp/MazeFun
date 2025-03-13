@@ -16,7 +16,7 @@ mazeList = []
 modeD = DropBox(win,(10,5),(80,20),"Mode",["Generate","Solve"],15)
 
 # GenerateMaze() Elements
-newMazeB = Button(win,(10,70),(80,20),"New Maze",15)
+newMazeB = Button(win,(10,35),(80,20),"New Maze",15)
 algorithmB = Button(win,(10,200),(80,20),"ApplyAlgorithm",10)
 addStepB = Button(win,(55,140),(30,20),"+1",15)
 subStepB = Button(win,(15,140),(30,20),"-1",15)
@@ -144,7 +144,13 @@ while running:
                 mazeList.pop(i)
     
     # DropBox for selecting the mode of the application
-    modeD.Clicked()
+    if modeD.Clicked() == True: # disables selected buttons when the dropdown is open
+        if modeD.open == True: #disable buttons
+            newMazeB.active = False
+        
+        else:# re-enable buttons
+            newMazeB.active = True
+            newMazeB.clicking = True
     modeD.Draw()
 
     # deletes a maze if button is clicked
