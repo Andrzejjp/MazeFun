@@ -191,21 +191,10 @@ class DropBox(Button):
 
     def GenerateOptionsRects(self):
         rectList = []
-        for i in range(1,len(self.options)):
+        for i in range(1,len(self.options)+1):
             rect = pygame.Rect((self.rect[0],self.rect[1]+(self.rect[3]*i),self.rect[2],self.rect[3]))
             rectList.append(rect)
         return rectList
-
-
-
-    def OptionFromY(self,y): # takes y value of mouse and returns the index of an option in options list
-        ybox = self.box[1]
-        ypos = self.rect[1]
-        for i in range(2,len(self.options)+2):
-            start = ypos + ybox*(i-1)
-            end = ypos + ybox*(i)
-            if start <= y and end >= y:
-                return(i-2)
 
     def Clicked(self):
         if pygame.mouse.get_pressed()[0] == False:
@@ -215,12 +204,35 @@ class DropBox(Button):
             self.clicking = True
             if self.open:
                 self.open = False
-                self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1]) 
-                self.currentOption = self.OptionFromY(pygame.mouse.get_pos()[1])
             else:
                 self.open = True
-                self.rect = pygame.Rect(self.rect[0],self.rect[1],self.rect[2],self.box[1] + self.box[1]*len(self.options))
         
+        if self.open:
+            for i in range(len(self.optionsRects)):
+                if self.Hovering(self.optionsRects[i]) and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
+                    self.clicking = True
+                    self.currentOption = i
+                    self.open = False
+
+
+    
+    def Draw(self):
+        selectedOption = ""
+
+        if self.currentOption != None:
+            selectedOption = self.options[self.currentOption][0]
+
+        if self.Hovering(self.rect):
+            pygame.draw.rect(self.surf,self.hcolour,self.rect)
+        else:
+            pygame.draw.rect(self.surf,self.colour,self.rect)
+    
+        if self.open:
+            for rect in self.optionsRects:
+                if self.Hovering(rect):
+                    pygame.draw.rect(self.surf,self.hcolour,rect)
+                else:
+                    pygame.draw.rect(self.surf,self.colour,rect)
         
         
     # def Draw(self):
