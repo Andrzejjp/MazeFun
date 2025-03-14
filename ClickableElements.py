@@ -202,6 +202,7 @@ class DropBox(Button):
 
         if self.Hovering(self.rect) == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
             self.clicking = True
+            self.currentOption = None
             if self.open:
                 self.open = False
             else:
@@ -223,6 +224,8 @@ class DropBox(Button):
 
         if self.currentOption != None:
             selectedOption = self.options[self.currentOption][0]
+        else:
+            selectedOption = ""
 
         if self.Hovering(self.rect):
             pygame.draw.rect(self.surf,self.hcolour,self.rect)
