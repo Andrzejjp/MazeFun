@@ -4,7 +4,7 @@ from ClickableElements import MazeClick,ClickableElements
 
 class MazeCell:
     def __init__(self):
-        self.wallsList = [True,True,True,True] #(Right,Left,Up,Down)
+        self.wallsList = [True,True,True,True] #(Right,Left,Up,Down) up and down may be switched
 
 
 class Maze:
@@ -20,6 +20,7 @@ class Maze:
         self.cellArray = self.GenerateCellArray() #stores all cells in a 2d array
         self.currentStep = 1
         self.endStep = 1
+        self.adjacencyMatrix = None
         self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
         self.clickObj = MazeClick(self.surface,self)
 
@@ -40,7 +41,6 @@ class Maze:
         self.clickObj.box = (self.rows*self.px,self.cols*self.px)
         self.clickObj.rect = pygame.Rect(self.origin,self.clickObj.box)
         
-
     def UpdatePx(self,newpx):
         self.mRect = pygame.Rect(self.origin,(self.rows*newpx,self.cols*newpx))
         self.clickObj = MazeClick(self.origin,(self.rows*newpx,self.cols*newpx),self.surface)
@@ -112,6 +112,7 @@ class Maze:
                 currentCell = self.cellArray[x][y]
                 for i in range (4):
                     currentCell.wallsList[i] = True
+    
     def ConvertFromStateString(self,step):
         #extracts the relevant step#
         instruction = ""
@@ -180,6 +181,40 @@ class Maze:
         for i in range(1,self.currentStep):
             self.ApplyStep(i)
 
+    def GenerateAdjacencyMatrix(self):# generates an adjacency matrix from self.cellArray
+        if self.endStep > 1:
+            if self.currentStep == self.endStep:
+                adjacencyMatrix =  [[0 for output in range(self.cols*self.rows)] for input in range(self.rows*self.cols)]
+                
+                for y in range(self.cols):
+                    for x in range(self.rows):
+                        currentcell = self.cellArray[x][y]
+                        AMReference = (x+y*self.rows)
+
+                        print(currentcell.wallsList)
+                        print(x,y)
+
+                        #checks around the cell 
+                        if currentcell.wallsList[0] == False: # right
+                            adjacencyMatrix[AMReference][AMReference+1] = 1
+                            print("right")
+                        if currentcell.wallsList[1] == False: # left
+                            adjacencyMatrix[AMReference][AMReference-1] = 1
+                            print("left")
+                        if currentcell.wallsList[3] == False and y != 0: # up
+                            adjacencyMatrix[AMReference][AMReference-self.rows] = 1
+                            print("up")
+                        if currentcell.wallsList[2] == False and y != self.cols-1: # down
+                            adjacencyMatrix[AMReference][AMReference+self.rows] = 1
+                            print("down")
+                
+                self.adjacencyMatrix = adjacencyMatrix        
+            
+            else:
+                raise TypeError("Partialy Generated Maze")
+        else:
+            raise TypeError("Empty State String")
+
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left
         for y in range(self.cols):
@@ -190,6 +225,12 @@ class Maze:
                     if wall == True:
                         walls += 1
                 print(walls, end = "    ")
+            print("\n")
+
+    def OutputAM(self): # displays the Adjacency Matrix in the terminal
+        for y in range(self.cols*self.rows):
+            for x in range(self.rows*self.cols):
+                print(self.adjacencyMatrix[x][y],end= "    ")
             print("\n")
 
     def DrawMazeThin(self):

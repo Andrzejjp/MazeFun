@@ -64,6 +64,7 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
             selectedMaze.MakeEntrance()
             selectedMaze.UpdateEndStep()
             selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
+            selectedMaze.GenerateAdjacencyMatrix()
             stepS.max = selectedMaze.endStep
             stepS.SetValue(selectedMaze.endStep)
         algorithmB.Draw()
@@ -158,7 +159,6 @@ while running:
                 mazeList.pop(len(mazeList)-1)
                 selectedMaze = None
         deleteB.Draw()
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
