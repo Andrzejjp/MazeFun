@@ -202,8 +202,8 @@ class DropBox(Button):
 
         if self.Hovering(self.rect) == True and self.clicking == False and pygame.mouse.get_pressed()[0] == True:
             self.clicking = True
-            self.currentOption = None
             if self.open:
+                self.currentOption = None
                 self.open = False
             else:
                 self.open = True

@@ -13,10 +13,10 @@ pygame.display.set_caption("MazeFun")
 mazeList = []
 
 # Misc Elements
-modeD = DropBox(win,(10,5),(80,20),"Mode",["Generate","Solve"],15)
+modeD = DropBox(win,(100,5),(80,20),"Mode",["Generate","Solve"],15)
+newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
 
 # GenerateMaze() Elements
-newMazeB = Button(win,(10,35),(80,20),"New Maze",15)
 algorithmB = Button(win,(10,200),(80,20),"ApplyAlgorithm",10)
 addStepB = Button(win,(55,140),(30,20),"+1",15)
 subStepB = Button(win,(15,140),(30,20),"-1",15)
@@ -27,8 +27,9 @@ stepS = Slider(win,(10,140),(80,5),"Step",1,1,15)
 sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
-algorithmSelectorD = DropBox(win,(10,100),(80,20),"Algorithm",["DepthFirst"],11)
+gAlgorithmSelectorD = DropBox(win,(10,100),(80,20),"Algorithm",["DepthFirst"],11)
 # SolveMaze() Elements
+# sAlgorithmSelectorD = DropBox(win,())
 
 selectedMaze = None
 
@@ -48,10 +49,6 @@ def DrawStaticSurfs(surface):
     pygame.draw.rect(surface,("#F5F5F5"),topBarRect)
 
 def GenerateMaze(selectedMaze): # everything used to generate a maze is here
-
-    if newMazeB.Clicked():
-        mazeList.append(Maze(win))
-    newMazeB.Draw()
 
     if selectedMaze != None:
         if selectedMaze.clickObj.CheckSelect() == True:
@@ -101,22 +98,30 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
             stepS.SetValue(selectedMaze.currentStep)
         subStepB.Draw()
 
-        algorithmSelectorD.Clicked()
-        algorithmSelectorD.Draw()
+        gAlgorithmSelectorD.Clicked()
+        gAlgorithmSelectorD.Draw()
 
         # selectedMaze.AlgorithmOverlay()
 
-def SolveMaze(): # everything used to solve a maze is here
-    pass
+def SolveMaze(selectedMaze): # everything used to solve a maze is here
+    if selectedMaze != None:
+        pass
+
 
 def AlgorithmManager(): # based on the algorithm Dropdown applies an algorithm to the cube 
     pass
 ############################################################################################################################
 while running:
     DrawStaticSurfs(win)
+
+    if newMazeB.Clicked():
+        mazeList.append(Maze(win))
+    newMazeB.Draw()
     
     if modeD.currentOption == 0:
         GenerateMaze(selectedMaze)
+    elif modeD.currentOption == 1:
+        SolveMaze(selectedMaze)
 
     for maze in mazeList:
         maze.DrawMazeThin()
@@ -144,13 +149,7 @@ while running:
                 mazeList.pop(i)
     
     # DropBox for selecting the mode of the application
-    if modeD.Clicked() == True: # disables selected buttons when the dropdown is open
-        if modeD.open == True: #disable buttons
-            newMazeB.active = False
-        
-        else:# re-enable buttons
-            newMazeB.active = True
-            newMazeB.clicking = True
+    modeD.Clicked()
     modeD.Draw()
 
     # deletes a maze if button is clicked
