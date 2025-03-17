@@ -191,22 +191,19 @@ class Maze:
                         currentcell = self.cellArray[x][y]
                         AMReference = (x+y*self.rows)
 
-                        print(currentcell.wallsList)
-                        print(x,y)
-
                         #checks around the cell 
                         if currentcell.wallsList[0] == False: # right
                             adjacencyMatrix[AMReference][AMReference+1] = 1
-                            print("right")
+
                         if currentcell.wallsList[1] == False: # left
                             adjacencyMatrix[AMReference][AMReference-1] = 1
-                            print("left")
+                            
                         if currentcell.wallsList[3] == False and y != 0: # up
                             adjacencyMatrix[AMReference][AMReference-self.rows] = 1
-                            print("up")
+                           
                         if currentcell.wallsList[2] == False and y != self.cols-1: # down
                             adjacencyMatrix[AMReference][AMReference+self.rows] = 1
-                            print("down")
+                            
                 
                 self.adjacencyMatrix = adjacencyMatrix        
             

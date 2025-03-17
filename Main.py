@@ -1,7 +1,10 @@
 import pygame
+from queue import Queue
 from MazeMethods import Maze
 from ClickableElements import Button,Slider,DropBox
 from MazeGenerators import *
+from MazeSolvers import *
+
 winSize = (1400,700)
 FPS = 0
 running = True
@@ -29,6 +32,8 @@ sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
 gAlgorithmSelectorD = DropBox(win,(10,100),(80,20),"Algorithm",["DepthFirst"],11)
 # SolveMaze() Elements
+solveAlgoB = Button(win,(10,200),(80,20),"solveAlgo",10)
+
 # sAlgorithmSelectorD = DropBox(win,())
 
 selectedMaze = None
@@ -106,7 +111,19 @@ def GenerateMaze(selectedMaze): # everything used to generate a maze is here
 
 def SolveMaze(selectedMaze): # everything used to solve a maze is here
     if selectedMaze != None:
-        pass
+        solveAlgoB.Draw()
+        if solveAlgoB.Clicked() == True:
+
+            q = Queue(100)
+            d = []
+            p = []
+            for i in range(100):
+                d.append(False)
+                p.append(False)
+            BreadthFirstSearch(5,95,q,d,p,False,selectedMaze)
+
+
+
 
 
 def AlgorithmManager(): # based on the algorithm Dropdown applies an algorithm to the cube 
