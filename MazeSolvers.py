@@ -16,11 +16,11 @@ def BreadthFirstSearch(start,destination,queue,discoveredList,parent,found,maze)
                         found = True
     
     if found == True:
-        c = destination
+        temp = destination
         print(destination)
-        while c != start:
-            c = parent[c]
-            print(c)
-        c = parent[c]
-        print(c)
+        while temp != start:
+            temp = parent[temp]
+            print(temp)
+        temp = parent[temp]
+        print(temp)
 

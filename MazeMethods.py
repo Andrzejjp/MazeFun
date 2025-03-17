@@ -21,6 +21,7 @@ class Maze:
         self.currentStep = 1
         self.endStep = 1
         self.adjacencyMatrix = None
+        self.solveString = "." #stores the solution to the maze
         self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
         self.clickObj = MazeClick(self.surface,self)
 
