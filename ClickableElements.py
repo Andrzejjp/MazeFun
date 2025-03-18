@@ -24,7 +24,7 @@ class ClickableElements:
             return True
 
 class Button(ClickableElements):
-    def __init__(self,surface,pos,box,text,fontSize= 20,colour= (200,200,200),hcolour= (230,230,230),fcolour= (0,0,0)):
+    def __init__(self,surface,pos,box,text,fontSize= 20,colour=(220,220,220),hcolour=(190,190,190),fcolour= (0,0,0)):
         pygame.font.init()
         self.surf = surface
         super().__init__(pos,box)
@@ -90,10 +90,12 @@ class MazeClick(ClickableElements):
             px = self.maze.px
             mazePos = (self.maze.origin[0]-1,self.maze.origin[1]-1)
             mazeBox = (self.maze.rows*px,self.maze.cols*px)
-            pygame.draw.line(surf,colour,mazePos,(mazePos[0]+mazeBox[0]+1,mazePos[1]))
-            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1,mazePos[1]),(mazePos[0]+mazeBox[0]+1,mazePos[1]+mazeBox[1]+1))
-            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1,mazePos[1]+mazeBox[1]+1),(mazePos[0],mazePos[1]+mazeBox[1]+1))
-            pygame.draw.line(surf,colour,(mazePos[0],mazePos[1]+mazeBox[1]+1),mazePos)
+            sep = 3
+            thick = 2
+            pygame.draw.line(surf,colour,(mazePos[0]-sep,mazePos[1]-sep),(mazePos[0]+mazeBox[0]+1+sep,mazePos[1]-sep),thick)
+            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1+sep,mazePos[1]-sep),(mazePos[0]+mazeBox[0]+1+sep,mazePos[1]+mazeBox[1]+1+sep),thick)
+            pygame.draw.line(surf,colour,(mazePos[0]+mazeBox[0]+1+sep,mazePos[1]+mazeBox[1]+1+sep),(mazePos[0]-sep,mazePos[1]+mazeBox[1]+1+sep),thick)
+            pygame.draw.line(surf,colour,(mazePos[0]-sep,mazePos[1]+mazeBox[1]+1+sep),(mazePos[0]-sep,mazePos[1]-sep),thick)
 
     def CheckSelect(self): #returns true if a maze has been selected only once per selection
         if self.selectedIndicator == True:
@@ -101,7 +103,7 @@ class MazeClick(ClickableElements):
             return True
 
 class Slider(Button):
-    def __init__(self,surf,pos,box,text,max,min,fsize= 20,colour= (200,200,200),hcolour=(230,30,30),fcolour= (0,0,0)):
+    def __init__(self,surf,pos,box,text,max,min,fsize= 20,colour=(220,220,220),hcolour=(190,190,190),fcolour= (0,0,0)):
         super().__init__(surf,pos,box,text,fsize,colour,hcolour,fcolour)
         pygame.font.init()
         self.relativeDashPos = 0
@@ -182,7 +184,7 @@ class Slider(Button):
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
 class DropBox(Button):
-    def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(200,200,200),hcolour=(230,230,230),fcolour=(0,0,0)):
+    def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(220,220,220),hcolour=(190,190,190),fcolour=(0,0,0)):
         super().__init__(surf,pos,box,text,fontSize,colour,hcolour,fcolour)
         self.options = optionsList
         self.open = False #toggles if the dropboxes options are visable
@@ -261,35 +263,4 @@ class DropBox(Button):
         textSize = self.font.size(text)
         tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]+self.rect[3]/2-textSize[1]/2)
         pygame.Surface.blit(self.surf,textSurf,tPos)
-
-
-        
-    # def Draw(self):
-    #     option = ""
-    #     if self.currentOption != None:
-    #         option = (self.options[self.currentOption])[0]
-    #     if self.Hovering(self.rect) == True:
-    #         pygame.draw.rect(self.surf,self.hcolour,self.rect)
-    #     else:
-    #         pygame.draw.rect(self.surf,self.colour,self.rect)
-
-    #     if self.open == True:
-    #         combinedText = self.text+":"+option+"-"
-    #         textSurf = self.font.render(combinedText,True,self.fcolour)
-    #         # handles the options text 
-    #         for i in range(1,len(self.options)+1):
-    #             text = self.options[i-1]
-    #             textSize = self.font.size(text)
-    #             tPos = (self.rect[0]+self.rect[2]/2-textSize[0]/2,self.rect[1]+self.box[1]*i+self.box[1]/2-textSize[1]/2)
-    #             otherTextSurf = self.font.render((text),True,self.fcolour)
-    #             pygame.Surface.blit(self.surf,otherTextSurf,tPos)
-
-    #     else:
-    #         combinedText = self.text+":"+option+"^"
-    #         textSurf = self.font.render(combinedText,True,self.fcolour)
-        
-    #     #centers the text on the button
-    #     fontsize = self.font.size(combinedText)
-    #     tPos = (self.rect[0]+self.rect[2]/2-fontsize[0]/2,self.rect[1]+self.box[1]/2-fontsize[1]/2)
-    #     pygame.Surface.blit(self.surf,textSurf,tPos)
 

@@ -8,7 +8,7 @@ class MazeCell:
 
 
 class Maze:
-    def __init__(self,surface,pos=(100,30),rows=10,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
+    def __init__(self,surface,pos=(110,10),rows=10,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
         self.surface = surface
         self.origin = pos
         self.rows = rows #how many cells long it will be 
