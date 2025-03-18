@@ -57,6 +57,8 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
     if newMazeB.Clicked():
         mazeList.append(Maze(win))
+        selectedMaze = mazeList[-1]
+        mazeList[-1].clickObj.selected = True
     newMazeB.Draw()
 
     if selectedMaze != None:
