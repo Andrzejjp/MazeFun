@@ -66,8 +66,11 @@ class Maze:
         block += hex(cellPos[1])
         block += "."
         self.stateString += block       
-
-    def UpdateEndStep(self):#Calculates and assingnes the value of self.endStep
+    
+    def AddtoSolveString(self,cell): # takes in cell in adjacency matrix style
+        self.solveString += (str(cell)+".")
+        
+    def UpdateEndStep(self):#Calculates and assigns the value of self.endStep
         dots = 0
         for dot in self.stateString:
             if dot == ".":
@@ -263,6 +266,17 @@ class Maze:
 
     def DrawMazeThick(self):
         pass
+
+    def DrawSolution(self):
+        # count all steps
+        dots = 0
+        for dot in self.solveString:
+            if dot == ".":
+                dots += 1
+        
+        for i in range(1,dots): # finds all two connected cells
+            print(i)
+
 
     def MoveMaze(self):
         disp = self.clickObj.mouseDisp
