@@ -21,4 +21,3 @@ def BreadthFirstSearch(start,destination,queue,discoveredList,parent,found,maze)
         while temp != start:
             temp = parent[temp]
             maze.AddtoSolveString(temp)
-    print(maze.solveString)

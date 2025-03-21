@@ -268,15 +268,33 @@ class Maze:
         pass
 
     def DrawSolution(self):
-        # count all steps
-        dots = 0
-        for dot in self.solveString:
-            if dot == ".":
-                dots += 1
-        
-        for i in range(1,dots): # finds all two connected cells
-            print(i)
 
+        if len(self.solveString) > 1: #checks if the string has been filled
+            sS = self.solveString
+            
+            #extracts relevent point data
+            dIL = [] # dotIndexList
+            for i in range(len(sS)):
+                if sS[i] == ".":
+                    dIL.append(i)
+            
+            for i in range(2,len(dIL)):
+
+                cell1 = int(sS[dIL[i-2]+1:dIL[i-1]])
+                cell2 = int(sS[dIL[i-1]+1:dIL[i]])
+                
+                #converts to coords
+                point1 = ((cell1%self.rows),(cell1//self.rows))
+                point2 = ((cell2%self.rows),(cell2//self.rows))
+
+                # scales up to maze and centers on maze
+                px = self.px
+                ox = self.origin[0]
+                oy = self.origin[1]
+                point1 = (point1[0]*px+ox+px/2,point1[1]*px+oy+px/2)
+                point2 = (point2[0]*px+ox+px/2,point2[1]*px+oy+px/2)
+
+                pygame.draw.line(self.surface,(0,255,0),point1,point2,3)
 
     def MoveMaze(self):
         disp = self.clickObj.mouseDisp
@@ -285,7 +303,7 @@ class Maze:
         self.clickObj.mouseDisp = disp
 
     def AlgorithmOverlay(self,pColour=(255,0,0),cColour=(0,255,0)):#creates nice colours to show the algorithm better
-        overlaySurf = pygame.Surface((self.rows*self.px,self.cols*self.px),)
+        overlaySurf = pygame.Surface((self.rows*self.px,self.cols*self.px))
         #adds to the overlay
         for i in range(1,self.currentStep):
             pos = self.ConvertFromStateString(i)[0]

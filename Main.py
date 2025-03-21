@@ -52,7 +52,6 @@ def DrawStaticSurfs(surface):
     padding = 15
     pygame.draw.line(surface,(180,180,180),(leftBarRect[0]+padding,65),(leftBarRect[0]+leftBarRect[2]-padding,65),3)
     
-
 def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
     if newMazeB.Clicked():
@@ -120,10 +119,6 @@ def SolveMaze(selectedMaze): # everything to prepare solve mode
         if solveAlgoB.Clicked() == True:
             AlgorithmManager(1,0,selectedMaze)
 
-
-
-
-
 def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown applies an algorithm to the cube 
     match mode:
         case 0: # generating mazes 
@@ -146,6 +141,7 @@ def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown app
 
             selectedMaze.UpdateEndStep()
             selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
+            maze.solveString = "."
 
             match algorithm:
                 case 0: # breadth first 
@@ -158,7 +154,7 @@ def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown app
                     for i in range(nodes):
                         d.append(False)
                         p.append(False)
-                    BreadthFirstSearch(round(maze.rows/2),round(nodes-maze.rows/2),q,d,p,False,maze)
+                    BreadthFirstSearch(round(maze.rows/2),round(nodes+maze.rows/2-maze.cols),q,d,p,False,maze)
 
 
 ############################################################################################################################
@@ -174,6 +170,7 @@ while running:
     for maze in mazeList:
         maze.DrawMazeThin()
         maze.clickObj.RegisterClick()
+        maze.DrawSolution()
         
         #enforces 1 maze to be selected at a time
         selectedCount = 0
