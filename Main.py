@@ -50,14 +50,15 @@ def ErrorMessage(message): #prepares an error message
     font = pygame.font.SysFont("Courier New",fontsize)
     fcolour = (255,0,0)
     winSize = win.get_size()
-    text = "ERROR:"+message
+    text = "ERROR: "+message
 
     textSize = font.size(text)
     backroundRect = pygame.Rect((winSize[0]//2-(textSize[0]+padding)//2,winSize[1]//2-(textSize[1]+padding)//2),(textSize[0]+padding,textSize[1]+padding+errorB.rect[3]))
     textSurf = font.render(text,True,fcolour)
     pos = (winSize[0]//2-textSize[0]//2,winSize[1]//2-textSize[1]//2)
     errorB.rect = pygame.Rect((winSize[0]//2-errorB.rect[2]//2,winSize[1]//2+textSize[1]//2+padding//4),(errorB.rect[2],errorB.rect[3]))
-    return(backroundRect,textSurf,pos)
+    global Error
+    Error = (backroundRect,textSurf,pos)
 
 def DrawStaticSurfs(surface,selectedMaze):
 
@@ -137,7 +138,11 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 def SolveMaze(selectedMaze): # everything to prepare solve mode
     solveAlgoB.Draw()
     if solveAlgoB.Clicked() == True:
-        AlgorithmManager(1,0,selectedMaze)
+        if selectedMaze.currentStep > 1 and selectedMaze.currentStep == selectedMaze.endStep:
+            AlgorithmManager(1,0,selectedMaze)
+        
+        else:
+            ErrorMessage("maze must be fully generated")
 
 def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
     match mode:
