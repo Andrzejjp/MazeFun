@@ -104,12 +104,6 @@ class Maze:
                     case(0,-1):
                         currentCell.wallsList[3] = False
 
-    def MakeEntrance(self): #once an algorithim has been applied this remove to walls along the edges
-        cellPosX = round(self.rows/2)
-        
-        self.AddtoStateString((cellPosX,0),(0,-1))
-        self.AddtoStateString((cellPosX,self.cols-1),(0,1))
-
     def ClearMaze(self): #puts the walls back on the maze
         for y in range(self.cols):
             for x in range(self.rows):

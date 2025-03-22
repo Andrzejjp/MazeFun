@@ -10,35 +10,49 @@ FPS = 0
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
-win = pygame.display.set_mode((winSize[0], winSize[1]),pygame.RESIZABLE)
+win = pygame.display.set_mode((winSize[0], winSize[1]))
 pygame.display.set_caption("MazeFun")
+pygame.font.init()
 
 mazeList = []
 
+ErrorsList = []
+
 # Misc Elements
-modeD = DropBox(win,(10,5),(80,20),"Mode",["Generate","Solve"],15)
-newMazeB = Button(win,(10,35),(80,20),"New Maze",15)
-
-# GenerateMaze() Elements
-addStepB = Button(win,(55,140),(30,20),"+1",15)
-subStepB = Button(win,(15,140),(30,20),"-1",15)
+newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
 deleteB = Button(win,(10,670),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
-
-stepS = Slider(win,(10,120),(80,5),"Step",1,1,15)
 sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
-gAlgorithmSelectorD = DropBox(win,(10,75),(80,20),"Algorithm",["DepthFirst"],11)
+# GenerateMaze() Elements
+addStepB = Button(win,(55,110),(30,20),"+1",15)
+subStepB = Button(win,(15,110),(30,20),"-1",15)
+
+stepS = Slider(win,(10,90),(80,5),"Step",1,1,15)
+
+gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Algorithm",["DepthFirst"],11)
 
 # SolveMaze() Elements
-solveAlgoB = Button(win,(10,200),(80,20),"solveAlgo",10)
+solveAlgoB = Button(win,(10,150),(80,20),"solveAlgo",10)
 
 # sAlgorithmSelectorD = DropBox(win,())
 
 selectedMaze = None
 
 # functons
-def DrawStaticSurfs(surface):
+def ErrorMessage(message): # appends a surf to ErrorsList
+
+    fontsize = 20
+    padding = 30
+    font = pygame.font.SysFont("Courier New",fontsize)
+    fcolour = (0,0,0)
+
+    textSize = font.size(message)
+    backroundRect = pygame.Rect((),(textSize[0]+padding,textSize[1]+padding))
+    textSurf = font.render(message,True,fcolour)
+
+
+def DrawStaticSurfs(surface,selectedMaze):
 
     surfSize = surface.get_size()
 
@@ -49,89 +63,96 @@ def DrawStaticSurfs(surface):
     pygame.draw.rect(surface,("#FFFFFF"),leftBarRect)
     # pygame.draw.rect(surface,("#F5F5F5"),topBarRect)
 
-    padding = 15
-    pygame.draw.line(surface,(180,180,180),(leftBarRect[0]+padding,65),(leftBarRect[0]+leftBarRect[2]-padding,65),3)
+    #bars for ui
+    padding = 10
+    if selectedMaze != None:
+        pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,35),(leftBarRect[0]+leftBarRect[2]-padding,35),3)
+        pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,140),(leftBarRect[0]+leftBarRect[2]-padding,140),3)
     
 def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
-    if newMazeB.Clicked():
-        mazeList.append(Maze(win))
-        selectedMaze = mazeList[-1]
-        mazeList[-1].clickObj.selected = True
-    newMazeB.Draw()
+    if selectedMaze.clickObj.CheckSelect() == True:
+        sizeXS.SetValue(selectedMaze.rows)
+        sizeYS.SetValue(selectedMaze.cols)
+        stepS.SetValue(selectedMaze.currentStep)
 
-    if selectedMaze != None:
+    sizeXS.Draw()
+    if sizeXS.Clicked() == True: # when let go do below
+        selectedMaze.stateString = "."
+        selectedMaze.UpdateCurrentStep(1)
+        stepS.max = 1
+        stepS.SetValue(selectedMaze.currentStep)
+    if sizeXS.clicking == True:
+        selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
 
-        if selectedMaze.clickObj.CheckSelect() == True:
-            sizeXS.SetValue(selectedMaze.rows)
-            sizeYS.SetValue(selectedMaze.cols)
-            stepS.SetValue(selectedMaze.currentStep)
 
-        sizeXS.Draw()
-        if sizeXS.Clicked() == True:
-            selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
-            selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
-            stepS.max = 1
-            stepS.SetValue(selectedMaze.currentStep)
+    sizeYS.Draw()
+    if sizeYS.Clicked() == True: #when let go do below
+        selectedMaze.stateString = "."
+        selectedMaze.UpdateCurrentStep(1)
+        stepS.max = 1
+        stepS.SetValue(selectedMaze.currentStep)
+    if sizeYS.clicking == True:
+        selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
 
-        sizeYS.Draw()
-        if sizeYS.Clicked() == True:
-            selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
-            selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
-            stepS.max = 1
-            stepS.SetValue(selectedMaze.currentStep)
         
-        stepS.Draw()
-        if stepS.Clicked() == True:
-            selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
+    stepS.Draw()
+    stepS.Clicked()
+    if stepS.clicking == True:
+        selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
-        if addStepB.Clicked() and selectedMaze.endStep > selectedMaze.currentStep:
-            selectedMaze.UpdateCurrentStep(selectedMaze.currentStep + 1)
-            stepS.SetValue(selectedMaze.currentStep)
-        addStepB.Draw()
+    if addStepB.Clicked() and selectedMaze.endStep > selectedMaze.currentStep:
+        selectedMaze.UpdateCurrentStep(selectedMaze.currentStep + 1)
+        stepS.SetValue(selectedMaze.currentStep)
+    addStepB.Draw()
 
-        if subStepB.Clicked() and 1 < selectedMaze.currentStep:
-            selectedMaze.UpdateCurrentStep(selectedMaze.currentStep - 1)
-            stepS.SetValue(selectedMaze.currentStep)
-        subStepB.Draw()
+    if subStepB.Clicked() and 1 < selectedMaze.currentStep:
+        selectedMaze.UpdateCurrentStep(selectedMaze.currentStep - 1)
+        stepS.SetValue(selectedMaze.currentStep)
+    subStepB.Draw()
 
-        if gAlgorithmSelectorD.Clicked() == True and gAlgorithmSelectorD.open == False:
-            AlgorithmManager(modeD.currentOption,gAlgorithmSelectorD.currentOption,selectedMaze)
-        if gAlgorithmSelectorD.open == True:
-            stepS.active = False
-            addStepB.active = False
-            addStepB.clicking = True
-            subStepB.active = False
-            subStepB.clicking = True
-        else:
-            stepS.active = True
-            addStepB.active = True
-            subStepB.active = True
-        gAlgorithmSelectorD.Draw()
+    if gAlgorithmSelectorD.Clicked() == True and gAlgorithmSelectorD.open == False and gAlgorithmSelectorD.currentOption != None:
+        AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
+    if gAlgorithmSelectorD.open == True:
+        stepS.active = False
+        addStepB.active = False
+        addStepB.clicking = True
+        subStepB.active = False
+        subStepB.clicking = True
+    else:
+        stepS.active = True
+        addStepB.active = True
+        subStepB.active = True
+    gAlgorithmSelectorD.Draw()
 
-        # selectedMaze.AlgorithmOverlay()
+    # selectedMaze.AlgorithmOverlay()
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
-    if selectedMaze != None:
-        solveAlgoB.Draw()
-        if solveAlgoB.Clicked() == True:
-            AlgorithmManager(1,0,selectedMaze)
+    solveAlgoB.Draw()
+    if solveAlgoB.Clicked() == True:
+        AlgorithmManager(1,0,selectedMaze)
 
-def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown applies an algorithm to the cube 
+def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
     match mode:
         case 0: # generating mazes 
 
             maze.stateString = "."
             maze.ClearMaze()
+            cellPosX = round(maze.rows/2)
+        
+            maze.AddtoStateString((cellPosX,0),(0,-1)) # makes entrance
 
+            # algorithms contained within
+            
             match algorithm:
                 case 0: # depth first
                     vList= []
                     DepthFirst(maze,(round(maze.rows/2),0),vList)
             
-            maze.MakeEntrance()
+
+            # ^^^^^^^^^^^^^^^^
+            
+            maze.AddtoStateString((cellPosX,maze.cols-1),(0,1)) # makes exit
             maze.UpdateEndStep()
             maze.UpdateCurrentStep(maze.endStep)
             stepS.max = maze.endStep
@@ -142,6 +163,8 @@ def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown app
             selectedMaze.UpdateEndStep()
             selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
             maze.solveString = "."
+
+            # algorithms contained within
 
             match algorithm:
                 case 0: # breadth first 
@@ -154,18 +177,16 @@ def AlgorithmManager(mode,algorithm,maze): # based on the algorithm Dropdown app
                     for i in range(nodes):
                         d.append(False)
                         p.append(False)
-                    BreadthFirstSearch(round(maze.rows/2),round(nodes+maze.rows/2-maze.cols),q,d,p,False,maze)
+                    BreadthFirstSearch(round(maze.rows/2),round(nodes-maze.rows/2),q,d,p,False,maze)
+    
+            # ^^^^^^^^^^^^^^^^^
+            
 
 
 ############################################################################################################################
 while running:
 
-    DrawStaticSurfs(win)
-    
-    if modeD.currentOption == 0:
-        GenerateMaze(selectedMaze)
-    elif modeD.currentOption == 1:
-        SolveMaze(selectedMaze)
+    DrawStaticSurfs(win,selectedMaze)
 
     for maze in mazeList:
         maze.DrawMazeThin()
@@ -193,21 +214,31 @@ while running:
                 mazeList.append(mazeList[i])
                 mazeList.pop(i)
     
-    # DropBox for selecting the mode of the application
-    modeD.Clicked()
-    modeD.Draw()
-    if modeD.open == True: # disables buttons underneath the dropbox
-        newMazeB.active = False
-        newMazeB.clicking = True
-    else:
-        newMazeB.active = True
+    # generates a new maze
+    if newMazeB.Clicked():
+        mazeList.append(Maze(win))
+        if len(mazeList) > 1 :
+            mazeList[-2].clickObj.selected = False
+        selectedMaze = mazeList[-1]
+        mazeList[-1].clickObj.selected = True
+        sizeXS.SetValue(selectedMaze.rows)
+        sizeYS.SetValue(selectedMaze.cols)
+        stepS.max = 1
+        stepS.SetValue(1)
+    newMazeB.Draw()
 
-    # deletes a maze if button is clicked
-    if selectedMaze != None:
-        if deleteB.Clicked():
-                mazeList.pop(len(mazeList)-1)
-                selectedMaze = None
-        deleteB.Draw()
+    if selectedMaze != None: # does something when a maze is selected
+    
+        GenerateMaze(selectedMaze)
+
+        SolveMaze(selectedMaze)
+
+        # deletes a maze if button is clicked
+        if selectedMaze != None:
+            if deleteB.Clicked():
+                    mazeList.pop(len(mazeList)-1)
+                    selectedMaze = None
+            deleteB.Draw()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

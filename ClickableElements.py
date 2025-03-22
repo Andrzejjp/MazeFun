@@ -24,7 +24,7 @@ class ClickableElements:
             return True
 
 class Button(ClickableElements):
-    def __init__(self,surface,pos,box,text,fontSize= 20,colour=(220,220,220),hcolour=(190,190,190),fcolour= (0,0,0)):
+    def __init__(self,surface,pos,box,text,fontSize= 20,colour=(210,210,210),hcolour=(180,180,180),fcolour= (0,0,0)):
         pygame.font.init()
         self.surf = surface
         super().__init__(pos,box)
@@ -103,7 +103,7 @@ class MazeClick(ClickableElements):
             return True
 
 class Slider(Button):
-    def __init__(self,surf,pos,box,text,max,min,fsize= 20,colour=(220,220,220),hcolour=(190,190,190),fcolour= (0,0,0)):
+    def __init__(self,surf,pos,box,text,max,min,fsize= 20,colour=(210,210,210),hcolour=(180,180,180),fcolour= (0,0,0)):
         super().__init__(surf,pos,box,text,fsize,colour,hcolour,fcolour)
         pygame.font.init()
         self.relativeDashPos = 0
@@ -184,7 +184,7 @@ class Slider(Button):
         pygame.Surface.blit(self.surf,textSurf,tPos)
 
 class DropBox(Button):
-    def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(220,220,220),hcolour=(190,190,190),fcolour=(0,0,0)):
+    def __init__(self,surf,pos,box,text,optionsList,fontSize=20,colour=(210,210,210),hcolour=(180,180,180),fcolour=(0,0,0)):
         super().__init__(surf,pos,box,text,fontSize,colour,hcolour,fcolour)
         self.options = optionsList
         self.open = False #toggles if the dropboxes options are visable
