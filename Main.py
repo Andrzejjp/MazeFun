@@ -43,7 +43,7 @@ solveAlgoB = Button(win,(10,150),(80,20),"solveAlgo",10)
 selectedMaze = None
 
 # functons
-def ErrorMessage(message): #prepares an error message
+def ErrorMessage(message): # creates error messages
 
     fontsize = 15
     padding = 30
