@@ -16,7 +16,10 @@ pygame.font.init()
 
 mazeList = []
 
-ErrorsList = []
+Error = None
+
+# Error stuff
+errorB = Button(win,(0,0),(40,20),"Ok",15)
 
 # Misc Elements
 newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
@@ -40,17 +43,21 @@ solveAlgoB = Button(win,(10,150),(80,20),"solveAlgo",10)
 selectedMaze = None
 
 # functons
-def ErrorMessage(message): # appends a surf to ErrorsList
+def ErrorMessage(message): #prepares an error message
 
-    fontsize = 20
+    fontsize = 15
     padding = 30
     font = pygame.font.SysFont("Courier New",fontsize)
-    fcolour = (0,0,0)
+    fcolour = (255,0,0)
+    winSize = win.get_size()
+    text = "ERROR:"+message
 
-    textSize = font.size(message)
-    backroundRect = pygame.Rect((),(textSize[0]+padding,textSize[1]+padding))
-    textSurf = font.render(message,True,fcolour)
-
+    textSize = font.size(text)
+    backroundRect = pygame.Rect((winSize[0]//2-(textSize[0]+padding)//2,winSize[1]//2-(textSize[1]+padding)//2),(textSize[0]+padding,textSize[1]+padding+errorB.rect[3]))
+    textSurf = font.render(text,True,fcolour)
+    pos = (winSize[0]//2-textSize[0]//2,winSize[1]//2-textSize[1]//2)
+    errorB.rect = pygame.Rect((winSize[0]//2-errorB.rect[2]//2,winSize[1]//2+textSize[1]//2+padding//4),(errorB.rect[2],errorB.rect[3]))
+    return(backroundRect,textSurf,pos)
 
 def DrawStaticSurfs(surface,selectedMaze):
 
@@ -227,6 +234,7 @@ while running:
         stepS.SetValue(1)
     newMazeB.Draw()
 
+
     if selectedMaze != None: # does something when a maze is selected
     
         GenerateMaze(selectedMaze)
@@ -243,6 +251,25 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    
+    # error message handler
+    if Error != None:
+        
+        #sets up the decreased opacity background
+        underlaySurf = pygame.Surface((winSize[0],winSize[1]))
+        underlaySurf.fill((1,1,1))
+        pygame.Surface.set_colorkey(underlaySurf,(0,0,0))
+        pygame.Surface.set_alpha(underlaySurf,230)
+        pygame.Surface.blit(win,underlaySurf,(0,0))
+        
+        pygame.draw.rect(win,(255,255,255),Error[0])
+        pygame.Surface.blit(win,Error[1],Error[2])
+
+        if errorB.Clicked() == True:
+            Error = None
+        errorB.Draw()
+
+
 
     pygame.display.flip()
     clock.tick(FPS)
