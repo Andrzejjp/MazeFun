@@ -33,10 +33,12 @@ subStepB = Button(win,(15,110),(30,20),"-1",15)
 
 stepS = Slider(win,(10,90),(80,5),"Step",1,1,15)
 
-gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Algorithm",["DepthFirst"],11)
+gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Generate",["DepthFirst"],13)
 
 # SolveMaze() Elements
 solveAlgoB = Button(win,(10,150),(80,20),"solveAlgo",10)
+
+sAlgorithmSelectorD = DropBox(win,(10,190),(80,20),"Solve",["BreadthFirst"],13)
 
 # sAlgorithmSelectorD = DropBox(win,())
 
@@ -92,6 +94,7 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         stepS.SetValue(selectedMaze.currentStep)
     if sizeXS.clicking == True:
         selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
+        selectedMaze.solveString = "."
 
 
     sizeYS.Draw()
@@ -102,6 +105,7 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         stepS.SetValue(selectedMaze.currentStep)
     if sizeYS.clicking == True:
         selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
+        selectedMaze.solveString = "."
 
         
     stepS.Draw()
@@ -121,13 +125,13 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
     if gAlgorithmSelectorD.Clicked() == True and gAlgorithmSelectorD.open == False and gAlgorithmSelectorD.currentOption != None:
         AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
-    if gAlgorithmSelectorD.open == True:
+    if gAlgorithmSelectorD.open == True: # disable buttons
         stepS.active = False
         addStepB.active = False
         addStepB.clicking = True
         subStepB.active = False
         subStepB.clicking = True
-    else:
+    else: # reenable buttons
         stepS.active = True
         addStepB.active = True
         subStepB.active = True
@@ -136,13 +140,19 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
     # selectedMaze.AlgorithmOverlay()
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
-    solveAlgoB.Draw()
-    if solveAlgoB.Clicked() == True:
+
+    if sAlgorithmSelectorD.Clicked() == True and sAlgorithmSelectorD.open == False and sAlgorithmSelectorD.currentOption != None:
         if selectedMaze.currentStep > 1 and selectedMaze.currentStep == selectedMaze.endStep:
-            AlgorithmManager(1,0,selectedMaze)
+            AlgorithmManager(1,gAlgorithmSelectorD.currentOption,selectedMaze)
         
         else:
-            ErrorMessage("maze must be fully generated")
+            ErrorMessage("maze must be fully generated to be solved")
+    if gAlgorithmSelectorD.open == True: # disable buttons
+        pass
+    else: #reenable buttons
+        pass
+    sAlgorithmSelectorD.Draw()
+
 
 def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
     match mode:
