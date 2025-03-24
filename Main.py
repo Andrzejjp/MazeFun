@@ -85,6 +85,8 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         sizeXS.SetValue(selectedMaze.rows)
         sizeYS.SetValue(selectedMaze.cols)
         stepS.SetValue(selectedMaze.currentStep)
+        gAlgorithmSelectorD.currentOption = selectedMaze.gAlg
+        sAlgorithmSelectorD.currentOption = selectedMaze.sAlg
 
     sizeXS.Draw()
     if sizeXS.Clicked() == True: # when let go do below
@@ -92,6 +94,10 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         selectedMaze.UpdateCurrentStep(1)
         stepS.max = 1
         stepS.SetValue(selectedMaze.currentStep)
+        gAlgorithmSelectorD.currentOption = None
+        selectedMaze.gAlg = None
+        sAlgorithmSelectorD.currentOption = None
+        selectedMaze.sAlg = None
     if sizeXS.clicking == True:
         selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
         selectedMaze.solveString = "."
@@ -103,6 +109,10 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         selectedMaze.UpdateCurrentStep(1)
         stepS.max = 1
         stepS.SetValue(selectedMaze.currentStep)
+        gAlgorithmSelectorD.currentOption = None
+        selectedMaze.gAlg = None
+        sAlgorithmSelectorD.currentOption = None
+        selectedMaze.sAlg = None
     if sizeYS.clicking == True:
         selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
         selectedMaze.solveString = "."
@@ -110,7 +120,7 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         
     stepS.Draw()
     if stepS.Clicked() == True and stepS.max == 1:
-        ErrorMessage("Generate the maze before stepping through it")
+        ErrorMessage("Generate the maze first")
     if stepS.clicking == True:
         selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
@@ -125,6 +135,7 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
     subStepB.Draw()
 
     if gAlgorithmSelectorD.Clicked() == True and gAlgorithmSelectorD.open == False and gAlgorithmSelectorD.currentOption != None:
+        selectedMaze.gAlgo = gAlgorithmSelectorD.currentOption
         AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
     if gAlgorithmSelectorD.open == True: # disable buttons
         stepS.active = False
@@ -144,6 +155,7 @@ def SolveMaze(selectedMaze): # everything to prepare solve mode
 
     if sAlgorithmSelectorD.Clicked() == True and sAlgorithmSelectorD.open == False and sAlgorithmSelectorD.currentOption != None:
         if selectedMaze.currentStep > 1 and selectedMaze.currentStep == selectedMaze.endStep:
+            selectedMaze.sAlgo = sAlgorithmSelectorD.currentOption
             AlgorithmManager(1,gAlgorithmSelectorD.currentOption,selectedMaze)
         
         else:
@@ -248,6 +260,8 @@ while running:
         sizeYS.SetValue(selectedMaze.cols)
         stepS.max = 1
         stepS.SetValue(1)
+        gAlgorithmSelectorD.currentOption = None
+        sAlgorithmSelectorD.currentOption = None
     newMazeB.Draw()
 
 

@@ -24,6 +24,8 @@ class Maze:
         self.solveString = "." #stores the solution to the maze
         self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
         self.clickObj = MazeClick(self.surface,self)
+        self.gAlg = None
+        self.sAlg = None
 
     def GenerateCellArray(self):
         #generates array
