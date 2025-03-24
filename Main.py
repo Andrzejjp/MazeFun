@@ -109,7 +109,8 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
         
     stepS.Draw()
-    stepS.Clicked()
+    if stepS.Clicked() == True and stepS.max == 1:
+        ErrorMessage("Generate the maze before stepping through it")
     if stepS.clicking == True:
         selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
