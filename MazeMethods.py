@@ -303,11 +303,15 @@ class Maze:
         #adds to the overlay
         for i in range(1,self.currentStep):
             pos = self.ConvertFromStateString(i)[0]
+            dir = self.ConvertFromStateString(i)[1]
             cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
+            cellRect2 = pygame.Rect(((pos[0]+dir[0])*self.px,(pos[1]+dir[1])*self.px),(self.px,self.px))
             pygame.draw.rect(overlaySurf,pColour,cellRect)
+            pygame.draw.rect(overlaySurf,pColour,cellRect2)
         if self.endStep-self.currentStep > 0:
             pos = self.ConvertFromStateString(self.currentStep)[0]
-            cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
+            dir = self.ConvertFromStateString(self.currentStep)[1]
+            cellRect = pygame.Rect((pos[0]*self.px+self.px//4+dir[0]*self.px//2,pos[1]*self.px+self.px//4+dir[1]*self.px//2),(self.px//2,self.px//2))
             pygame.draw.rect(overlaySurf,cColour,cellRect)
 
         #sets up the overlay

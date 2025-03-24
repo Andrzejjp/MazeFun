@@ -30,17 +30,16 @@ sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 # GenerateMaze() Elements
 addStepB = Button(win,(55,110),(30,20),"+1",15)
 subStepB = Button(win,(15,110),(30,20),"-1",15)
+gOverlayB = Button(win,(10,140),(80,20),"off",15)
 
 stepS = Slider(win,(10,90),(80,5),"Step",1,1,15)
 
 gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Generate",["DepthFirst"],13)
 
 # SolveMaze() Elements
-solveAlgoB = Button(win,(10,150),(80,20),"solveAlgo",10)
+solveAlgoB = Button(win,(10,155),(80,20),"solveAlgo",10)
 
-sAlgorithmSelectorD = DropBox(win,(10,190),(80,20),"Solve",["BreadthFirst"],13)
-
-# sAlgorithmSelectorD = DropBox(win,())
+sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"Solve",["BreadthFirst"],13)
 
 selectedMaze = None
 
@@ -77,7 +76,7 @@ def DrawStaticSurfs(surface,selectedMaze):
     padding = 10
     if selectedMaze != None:
         pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,35),(leftBarRect[0]+leftBarRect[2]-padding,35),3)
-        pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,140),(leftBarRect[0]+leftBarRect[2]-padding,140),3)
+        pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,170),(leftBarRect[0]+leftBarRect[2]-padding,170),3)
     
 def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
@@ -149,7 +148,16 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         subStepB.active = True
     gAlgorithmSelectorD.Draw()
 
-    # selectedMaze.AlgorithmOverlay()
+
+    if gOverlayB.Clicked() == True:
+        if gOverlayB.text == "off":
+            gOverlayB.text = "on"
+        else:
+            gOverlayB.text = "off"
+    
+    if gOverlayB.text == "on":
+        selectedMaze.AlgorithmOverlay()
+    gOverlayB.Draw()
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
 
@@ -159,13 +167,13 @@ def SolveMaze(selectedMaze): # everything to prepare solve mode
             AlgorithmManager(1,gAlgorithmSelectorD.currentOption,selectedMaze)
         
         else:
+            sAlgorithmSelectorD.currentOption = None
             ErrorMessage("maze must be fully generated to be solved")
     if gAlgorithmSelectorD.open == True: # disable buttons
         pass
     else: #reenable buttons
         pass
     sAlgorithmSelectorD.Draw()
-
 
 def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
     match mode:
