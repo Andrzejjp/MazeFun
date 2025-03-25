@@ -11,19 +11,29 @@ running = True
 clock = pygame.time.Clock()
 pygame.display.init()
 win = pygame.display.set_mode((winSize[0], winSize[1]))
-pygame.display.set_caption("MazeFun")
+pygame.display.set_caption("MazeMaker")
 pygame.font.init()
 
 mazeList = []
 
 Error = None
+# User Help stuff
+helpB = Button(win,(10,670),(80,20),"Help",15)
+helpText = [
+    "",
+    "",
+    "CONTROLS",
+    "",
+    "LeftMouseButton - interact with buttons and almost everything on screen",
+    "RightMouseButton - Selects a maze when hovering over one"
+]
 
 # Error stuff
 errorB = Button(win,(0,0),(40,20),"Ok",15)
 
 # Misc Elements
 newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
-deleteB = Button(win,(10,670),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
+deleteB = Button(win,(10,640),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
 sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
@@ -44,6 +54,28 @@ sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"Solve",["BreadthFirst"],13)
 selectedMaze = None
 
 # functons
+def DrawHelpScreen(): # Draws the help screen
+    
+    fontsize = 15
+    padding = 30
+    font = pygame.font.SysFont("Courier New",fontsize)
+    winSize = win.get_size()
+    TextList = helpText
+
+    longestLine = 0 
+    for line in TextList:
+        textLength = font.size(line)[1]
+        if longestLine < textLength:
+            longestLine = textLength
+    
+    textHeight = font.size(TextList[0])[1]
+    bgLength = longestLine+padding*2
+    bgHeight = (textHeight*len(TextList))+padding*2
+    backgroundRect = pygame.Rect((winSize[0]//2-(bgLength//2),winSize[1]//2-(bgHeight//2)),(bgLength,bgHeight))
+    pygame.draw.rect(win,(0,0,0),backgroundRect)
+    
+        
+
 def ErrorMessage(message): # creates error messages
 
     fontsize = 15
@@ -322,6 +354,17 @@ while running:
         if errorB.Clicked() == True:
             Error = None
         errorB.Draw()
+
+    # help screen
+    if helpB.Clicked() == True:
+        if helpB.text == "Close":
+            helpB.text = "Help"
+        else:
+            helpB.text = "Close"
+
+    if helpB.text == "Close":
+            DrawHelpScreen()
+    helpB.Draw()
 
 
 
