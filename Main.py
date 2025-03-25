@@ -79,7 +79,6 @@ def DrawStaticSurfs(surface,selectedMaze):
         pygame.draw.line(surface,(160,160,160),(leftBarRect[0]+padding,170),(leftBarRect[0]+leftBarRect[2]-padding,170),3)
     
 def GenerateMaze(selectedMaze): # everything to prepare generate mode
-
     if selectedMaze.clickObj.CheckSelect() == True:
         sizeXS.SetValue(selectedMaze.rows)
         sizeYS.SetValue(selectedMaze.cols)
@@ -133,9 +132,10 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         stepS.SetValue(selectedMaze.currentStep)
     subStepB.Draw()
 
-    if gAlgorithmSelectorD.Clicked() == True and gAlgorithmSelectorD.open == False and gAlgorithmSelectorD.currentOption != None:
-        selectedMaze.gAlgo = gAlgorithmSelectorD.currentOption
-        AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
+    if gAlgorithmSelectorD.Clicked() == True:
+        if gAlgorithmSelectorD.open == False:
+            selectedMaze.gAlg = gAlgorithmSelectorD.currentOption
+            AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
     if gAlgorithmSelectorD.open == True: # disable buttons
         stepS.active = False
         addStepB.active = False
@@ -161,14 +161,16 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
 
-    if sAlgorithmSelectorD.Clicked() == True and sAlgorithmSelectorD.open == False and sAlgorithmSelectorD.currentOption != None:
-        if selectedMaze.currentStep > 1 and selectedMaze.currentStep == selectedMaze.endStep:
-            selectedMaze.sAlgo = sAlgorithmSelectorD.currentOption
-            AlgorithmManager(1,gAlgorithmSelectorD.currentOption,selectedMaze)
-        
-        else:
-            sAlgorithmSelectorD.currentOption = None
-            ErrorMessage("maze must be fully generated to be solved")
+    if sAlgorithmSelectorD.Clicked() == True:
+        if sAlgorithmSelectorD.open == False:
+            if selectedMaze.currentStep > 4 and selectedMaze.currentStep == selectedMaze.endStep:
+                selectedMaze.sAlg = sAlgorithmSelectorD.currentOption
+                AlgorithmManager(1,sAlgorithmSelectorD.currentOption,selectedMaze)
+            
+            else:
+                sAlgorithmSelectorD.currentOption = None
+                ErrorMessage("maze must be fully generated to be solved")
+
     if gAlgorithmSelectorD.open == True: # disable buttons
         pass
     else: #reenable buttons
@@ -176,6 +178,7 @@ def SolveMaze(selectedMaze): # everything to prepare solve mode
     sAlgorithmSelectorD.Draw()
 
 def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
+
     match mode:
         case 0: # generating mazes 
 
@@ -191,6 +194,12 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                 case 0: # depth first
                     vList= []
                     DepthFirst(maze,(round(maze.rows/2),0),vList)
+                
+                case _: # default case
+                    
+                    maze.gAlg = None
+                    gAlgorithmSelectorD.currentOption = None
+
             
 
             # ^^^^^^^^^^^^^^^^
@@ -200,6 +209,9 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
             maze.UpdateCurrentStep(maze.endStep)
             stepS.max = maze.endStep
             stepS.SetValue(maze.endStep)
+            maze.solveString = "."
+            maze.sAlg = None
+            sAlgorithmSelectorD.currentOption = None
 
         case 1: # solving mazes
 
@@ -221,6 +233,10 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                         d.append(False)
                         p.append(False)
                     BreadthFirstSearch(round(maze.rows/2),round(nodes-maze.rows/2),q,d,p,False,maze)
+                
+                case _: # default Case
+                    maze.sAlg = None
+                    sAlgorithmSelectorD.currentOption = None
     
             # ^^^^^^^^^^^^^^^^^
             
