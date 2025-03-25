@@ -20,6 +20,7 @@ Error = None
 # User Help stuff
 helpB = Button(win,(10,670),(80,20),"Help",15)
 helpText = [
+    "Help Menu",
     "",
     "",
     "CONTROLS",
@@ -40,7 +41,7 @@ sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 # GenerateMaze() Elements
 addStepB = Button(win,(55,110),(30,20),"+1",15)
 subStepB = Button(win,(15,110),(30,20),"-1",15)
-gOverlayB = Button(win,(10,140),(80,20),"off",15)
+gOverlayB = Button(win,(10,140),(80,20),"Path: off",15)
 
 stepS = Slider(win,(10,90),(80,5),"Step",1,1,15)
 
@@ -57,25 +58,38 @@ selectedMaze = None
 def DrawHelpScreen(): # Draws the help screen
     
     fontsize = 15
-    padding = 30
+    padding = 20
     font = pygame.font.SysFont("Courier New",fontsize)
+    fontColour = (0,0,0)
     winSize = win.get_size()
-    TextList = helpText
+    textList = helpText
 
     longestLine = 0 
-    for line in TextList:
-        textLength = font.size(line)[1]
+    for line in textList:
+        textLength = font.size(line)[0]
         if longestLine < textLength:
             longestLine = textLength
     
-    textHeight = font.size(TextList[0])[1]
+    textHeight = font.size(textList[0])[1]
     bgLength = longestLine+padding*2
-    bgHeight = (textHeight*len(TextList))+padding*2
+    bgHeight = (textHeight*len(textList))+padding*2
     backgroundRect = pygame.Rect((winSize[0]//2-(bgLength//2),winSize[1]//2-(bgHeight//2)),(bgLength,bgHeight))
-    pygame.draw.rect(win,(0,0,0),backgroundRect)
     
-        
+    textSurfList = []
+    for i in range(len(textList)):
+        textSurfList.append(font.render(textList[i],True,fontColour))
+    
+    underlaySurf = pygame.Surface((winSize[0],winSize[1]))
+    underlaySurf.fill((1,1,1))
+    pygame.Surface.set_colorkey(underlaySurf,(0,0,0))
+    pygame.Surface.set_alpha(underlaySurf,230)
+    pygame.Surface.blit(win,underlaySurf,(0,0))
 
+    pygame.draw.rect(win,(255,255,255),backgroundRect)
+
+    for i in range(len(textSurfList)):
+        pygame.Surface.blit(win,textSurfList[i],(backgroundRect[0]+padding,backgroundRect[1]+padding+textHeight*i))
+    
 def ErrorMessage(message): # creates error messages
 
     fontsize = 15
@@ -182,12 +196,12 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
 
 
     if gOverlayB.Clicked() == True:
-        if gOverlayB.text == "off":
-            gOverlayB.text = "on"
+        if gOverlayB.text == "Path: off":
+            gOverlayB.text = "Path: on"
         else:
-            gOverlayB.text = "off"
+            gOverlayB.text = "Path: off"
     
-    if gOverlayB.text == "on":
+    if gOverlayB.text == "Path: on":
         selectedMaze.AlgorithmOverlay()
     gOverlayB.Draw()
 
@@ -363,7 +377,7 @@ while running:
             helpB.text = "Close"
 
     if helpB.text == "Close":
-            DrawHelpScreen()
+        DrawHelpScreen()
     helpB.Draw()
 
 
