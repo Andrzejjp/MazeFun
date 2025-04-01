@@ -22,6 +22,7 @@ helpB = Button(win,(10,670),(80,20),"Help",15)
 helpText = [
     "Help Menu",
     "",
+    "click on the New button to create your first maze",
     "",
     "CONTROLS",
     "",
