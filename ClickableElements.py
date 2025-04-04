@@ -50,7 +50,7 @@ class MazeClick(ClickableElements):
     def __init__(self,surf,maze):
         self.active = True
         self.pos = maze.origin
-        self.box = (maze.rows*maze.px,maze.cols*maze.px)
+        self.box = (maze.cols*maze.px,maze.rows*maze.px)
         self.rect = pygame.Rect(self.pos,self.box)
         self.surf = surf
         self.maze = maze
@@ -89,7 +89,7 @@ class MazeClick(ClickableElements):
             colour = (255,0,0)
             px = self.maze.px
             mazePos = (self.maze.origin[0]-1,self.maze.origin[1]-1)
-            mazeBox = (self.maze.rows*px,self.maze.cols*px)
+            mazeBox = (self.maze.cols*px,self.maze.rows*px)
             sep = 3
             thick = 2
             pygame.draw.line(surf,colour,(mazePos[0]-sep,mazePos[1]-sep),(mazePos[0]+mazeBox[0]+1+sep,mazePos[1]-sep),thick)

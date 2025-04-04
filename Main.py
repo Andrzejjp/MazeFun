@@ -40,11 +40,7 @@ sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
 sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
 
 # GenerateMaze() Elements
-addStepB = Button(win,(55,110),(30,20),"+1",15)
-subStepB = Button(win,(15,110),(30,20),"-1",15)
-gOverlayB = Button(win,(10,140),(80,20),"Path: off",15)
 
-stepS = Slider(win,(10,90),(80,5),"Step",1,1,15)
 
 gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Generate",["DepthFirst"],13)
 
@@ -129,7 +125,6 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
     if selectedMaze.clickObj.CheckSelect() == True:
         sizeXS.SetValue(selectedMaze.rows)
         sizeYS.SetValue(selectedMaze.cols)
-        stepS.SetValue(selectedMaze.currentStep)
         gAlgorithmSelectorD.currentOption = selectedMaze.gAlg
         sAlgorithmSelectorD.currentOption = selectedMaze.sAlg
 
@@ -137,8 +132,6 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
     if sizeXS.Clicked() == True: # when let go do below
         selectedMaze.stateString = "."
         selectedMaze.UpdateCurrentStep(1)
-        stepS.max = 1
-        stepS.SetValue(selectedMaze.currentStep)
         gAlgorithmSelectorD.currentOption = None
         selectedMaze.gAlg = None
         sAlgorithmSelectorD.currentOption = None
@@ -152,8 +145,6 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
     if sizeYS.Clicked() == True: #when let go do below
         selectedMaze.stateString = "."
         selectedMaze.UpdateCurrentStep(1)
-        stepS.max = 1
-        stepS.SetValue(selectedMaze.currentStep)
         gAlgorithmSelectorD.currentOption = None
         selectedMaze.gAlg = None
         sAlgorithmSelectorD.currentOption = None
@@ -163,48 +154,19 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         selectedMaze.solveString = "."
 
         
-    stepS.Draw()
-    if stepS.Clicked() == True and stepS.max == 1:
-        ErrorMessage("Generate the maze first")
-    if stepS.clicking == True:
-        selectedMaze.UpdateCurrentStep(stepS.ReturnValue())
 
-    if addStepB.Clicked() and selectedMaze.endStep > selectedMaze.currentStep:
-        selectedMaze.UpdateCurrentStep(selectedMaze.currentStep + 1)
-        stepS.SetValue(selectedMaze.currentStep)
-    addStepB.Draw()
 
-    if subStepB.Clicked() and 1 < selectedMaze.currentStep:
-        selectedMaze.UpdateCurrentStep(selectedMaze.currentStep - 1)
-        stepS.SetValue(selectedMaze.currentStep)
-    subStepB.Draw()
 
     if gAlgorithmSelectorD.Clicked() == True:
         if gAlgorithmSelectorD.open == False:
             selectedMaze.gAlg = gAlgorithmSelectorD.currentOption
             AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
     if gAlgorithmSelectorD.open == True: # disable buttons
-        stepS.active = False
-        addStepB.active = False
-        addStepB.clicking = True
-        subStepB.active = False
-        subStepB.clicking = True
+        pass
     else: # reenable buttons
-        stepS.active = True
-        addStepB.active = True
-        subStepB.active = True
+        pass
     gAlgorithmSelectorD.Draw()
 
-
-    if gOverlayB.Clicked() == True:
-        if gOverlayB.text == "Path: off":
-            gOverlayB.text = "Path: on"
-        else:
-            gOverlayB.text = "Path: off"
-    
-    if gOverlayB.text == "Path: on":
-        selectedMaze.AlgorithmOverlay()
-    gOverlayB.Draw()
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
 
@@ -254,8 +216,6 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
             maze.AddtoStateString((cellPosX,maze.cols-1),(0,1)) # makes exit
             maze.UpdateEndStep()
             maze.UpdateCurrentStep(maze.endStep)
-            stepS.max = maze.endStep
-            stepS.SetValue(maze.endStep)
             maze.solveString = "."
             maze.sAlg = None
             sAlgorithmSelectorD.currentOption = None
@@ -326,11 +286,10 @@ while running:
         if len(mazeList) > 1 :
             mazeList[-2].clickObj.selected = False
         selectedMaze = mazeList[-1]
+
         mazeList[-1].clickObj.selected = True
         sizeXS.SetValue(selectedMaze.rows)
         sizeYS.SetValue(selectedMaze.cols)
-        stepS.max = 1
-        stepS.SetValue(1)
         gAlgorithmSelectorD.currentOption = None
         sAlgorithmSelectorD.currentOption = None
     newMazeB.Draw()

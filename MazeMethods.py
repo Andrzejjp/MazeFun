@@ -1,14 +1,8 @@
 import pygame
-from ClickableElements import MazeClick,ClickableElements
-
-
-class MazeCell:
-    def __init__(self):
-        self.wallsList = [True,True,True,True] #(Right,Left,Up,Down) up and down may be switched
-
+from ClickableElements import MazeClick
 
 class Maze:
-    def __init__(self,surface,pos=(110,10),rows=10,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
+    def __init__(self,surface,pos=(110,10),rows=5,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
         self.surface = surface
         self.origin = pos
         self.rows = rows #how many cells long it will be 
@@ -17,12 +11,11 @@ class Maze:
         self.bColour = bColour
         self.px = 20
         self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
-        self.cellArray = self.GenerateCellArray() #stores all cells in a 2d array
-        self.currentStep = 1
-        self.endStep = 1
-        self.adjacencyMatrix = None
         self.solveString = "." #stores the solution to the maze
-        self.mRect = pygame.Rect(self.origin,(self.rows*20,self.cols*20))
+        self.adjacencyMatrix = self.GenerateAdjacencyMatrix() # data structure that stores a the maze (0,0)=top left (m,n)=bottom right 
+        self.gStep = 1
+        self.sStep = 1
+        self.mRect = pygame.Rect(self.origin,(self.cols*20,self.rows*20))
         self.clickObj = MazeClick(self.surface,self)
         self.gAlg = None
         self.sAlg = None
@@ -38,8 +31,8 @@ class Maze:
         return array
 
     def UpdateSize(self,rows,cols):
-        self.rows = rows
-        self.cols = cols
+        self.rows = cols
+        self.cols = rows
         self.cellArray = self.GenerateCellArray()
         self.clickObj.box = (self.rows*self.px,self.cols*self.px)
         self.clickObj.rect = pygame.Rect(self.origin,self.clickObj.box)
@@ -174,52 +167,42 @@ class Maze:
     def UpdateCurrentStep(self,step): #applies all steps from 1 to current step
         self.UpdateEndStep()
         if 1 <= step and self.endStep >= step:
-            self.currentStep = step
+            self.gStep = step
         else:
             raise TypeError("step Value is outside the range")
         self.ClearMaze()
-        for i in range(1,self.currentStep):
+        for i in range(1,self.gStep):
             self.ApplyStep(i)
 
-    def GenerateAdjacencyMatrix(self):# generates an adjacency matrix from self.cellArray
-        if self.endStep > 1:
-            if self.currentStep == self.endStep:
-                adjacencyMatrix =  [[0 for output in range(self.cols*self.rows)] for input in range(self.rows*self.cols)]
-                
-                for y in range(self.cols):
-                    for x in range(self.rows):
-                        currentcell = self.cellArray[x][y]
-                        AMReference = (x+y*self.rows)
+    def GenerateAdjacencyMatrix(self):# generates a graph that represents a maze 1 = path,2 = wall,0 = no connection
+        rows = self.rows
+        cols = self.cols
+        vertices  = rows*cols
+        
+        #generates an un-connected graph
+        adjacencyMatrix = [[0 for output in range(vertices)] for input in range(vertices)]
 
-                        #checks around the cell 
-                        if currentcell.wallsList[0] == False: # right
-                            adjacencyMatrix[AMReference][AMReference+1] = 1
-
-                        if currentcell.wallsList[1] == False: # left
-                            adjacencyMatrix[AMReference][AMReference-1] = 1
-                            
-                        if currentcell.wallsList[3] == False and y != 0: # up
-                            adjacencyMatrix[AMReference][AMReference-self.rows] = 1
-                           
-                        if currentcell.wallsList[2] == False and y != self.cols-1: # down
-                            adjacencyMatrix[AMReference][AMReference+self.rows] = 1
-                            
-                
-                self.adjacencyMatrix = adjacencyMatrix        
-            
-            else:
-                raise TypeError("Partialy Generated Maze")
-        else:
-            raise TypeError("Empty State String")
+        for i in range(0,vertices):
+            #finds 4 neigbours around
+            if (i-cols) > -1: # up
+                adjacencyMatrix[i][i-cols] = 2
+            if (i%cols) != cols-1:# right
+                adjacencyMatrix[i][i+1] = 2
+            if (i%cols) != 0: # left
+                adjacencyMatrix[i][i-1] = 2
+            if i < vertices-cols: # down
+                adjacencyMatrix[i][i+cols] = 2
+        
+        return adjacencyMatrix
 
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left
-        for y in range(self.cols):
-            for x in range(self.rows):
+        for y in range(self.rows):
+            for x in range(self.cols):
                 walls = 0
-                currentCell = self.cellArray[x][y]
-                for wall in  currentCell.wallsList:
-                    if wall == True:
+                currentVertex = self.adjacencyMatrix[x+y*self.cols]
+                for neighbours in  currentVertex:
+                    if neighbours == 2:
                         walls += 1
                 print(walls, end = "    ")
             print("\n")
@@ -232,33 +215,59 @@ class Maze:
 
     def DrawMazeThin(self):
 
+        
+        #draws background
         surf = self.surface
         px = self.px
-        oriX = self.origin[0]
-        oriY = self.origin[1]
-        wColour = self.wColour
-        
+        height = self.rows
+        length = self.cols
 
-        #draws background
-        bRect = pygame.Rect(self.origin,(self.rows*px,self.cols*px))
+        bRect = pygame.Rect(self.origin,(length*px,height*px))
         pygame.draw.rect(surf,self.bColour,bRect)
 
         #draws walls
-        for y in range(self.cols):
-            for x in range(self.rows):
-                currentCell = self.cellArray[x][y]
+        
+        vertices = height*length
+        wColour = self.wColour
+        originX = self.origin[0]
+        originY = self.origin[1]
 
-                if currentCell.wallsList[0] == True:
-                    pygame.draw.line(surf,wColour,(x*px+px+oriX-1,y*px+oriY),(x*px+px+oriX-1,y*px+px+oriY))
+        pygame.draw.line(surf,wColour,(originX,originY),(originX+px*length,originY),2)
+        pygame.draw.line(surf,wColour,(originX+px*length,originY),(originX+px*length,originY+px*height),2)
+        pygame.draw.line(surf,wColour,(originX+px*length,originY+px*height),(originX,originY+px*height),2)
+        pygame.draw.line(surf,wColour,(originX,originY+px*height),(originX,originY),2)
+        
+        for i in range(0,vertices):
+            x = i%length
+            y = i//length
+            
+            # makes a wall for up and right
+            if (i-length) > -1: # up
+                if self.adjacencyMatrix[i][i-length] == 2:
+                    pygame.draw.line(surf,wColour,(originX+px*x,originY+px*y),(originX+px*(x+1),originY+px*y),2)
+                    
+            if (i%length) != length-1:# right
+                if self.adjacencyMatrix[i][i+1] == 2:
+                    pygame.draw.line(surf,wColour,(originX+px*(x+1),originY+px*y),(originX+px*(x+1),originY+px*(y+1)),2)
 
-                if currentCell.wallsList[1] == True:
-                    pygame.draw.line(surf,wColour,(x*px+oriX,y*px+oriY),(x*px+oriX,y*px+px+oriY))
 
-                if currentCell.wallsList[3] == True:
-                    pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+oriY),(x*px+oriX,y*px+oriY))
+
+
+        # for y in range(self.cols):
+        #     for x in range(self.rows):
+        #         currentCell = self.cellArray[x][y]
+
+        #         if currentCell.wallsList[0] == True:
+        #             pygame.draw.line(surf,wColour,(x*px+px+oriX-1,y*px+oriY),(x*px+px+oriX-1,y*px+px+oriY))
+
+        #         if currentCell.wallsList[1] == True:
+        #             pygame.draw.line(surf,wColour,(x*px+oriX,y*px+oriY),(x*px+oriX,y*px+px+oriY))
+
+        #         if currentCell.wallsList[3] == True:
+        #             pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+oriY),(x*px+oriX,y*px+oriY))
                 
-                if currentCell.wallsList[2] == True:
-                    pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+px+oriY-1),(x*px+oriX,y*px+px+oriY-1))
+        #         if currentCell.wallsList[2] == True:
+        #             pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+px+oriY-1),(x*px+oriX,y*px+px+oriY-1))
 
     def DrawMazeThick(self):
         pass
@@ -298,24 +307,4 @@ class Maze:
         self.UpdateOrigin((mousepos[0]-disp[0],mousepos[1]-disp[1]))
         self.clickObj.mouseDisp = disp
 
-    def AlgorithmOverlay(self,pColour=(255,0,0),cColour=(0,255,0)):#creates nice colours to show the algorithm better
-        overlaySurf = pygame.Surface((self.rows*self.px,self.cols*self.px))
-        #adds to the overlay
-        for i in range(1,self.currentStep):
-            pos = self.ConvertFromStateString(i)[0]
-            dir = self.ConvertFromStateString(i)[1]
-            cellRect = pygame.Rect((pos[0]*self.px,pos[1]*self.px),(self.px,self.px))
-            cellRect2 = pygame.Rect(((pos[0]+dir[0])*self.px,(pos[1]+dir[1])*self.px),(self.px,self.px))
-            pygame.draw.rect(overlaySurf,pColour,cellRect)
-            pygame.draw.rect(overlaySurf,pColour,cellRect2)
-        if self.endStep-self.currentStep > 0:
-            pos = self.ConvertFromStateString(self.currentStep)[0]
-            dir = self.ConvertFromStateString(self.currentStep)[1]
-            cellRect = pygame.Rect((pos[0]*self.px+self.px//4+dir[0]*self.px//2,pos[1]*self.px+self.px//4+dir[1]*self.px//2),(self.px//2,self.px//2))
-            pygame.draw.rect(overlaySurf,cColour,cellRect)
-
-        #sets up the overlay
-        pygame.Surface.set_colorkey(overlaySurf,(0,0,0))
-        pygame.Surface.set_alpha(overlaySurf,100)
-        pygame.Surface.blit(self.surface,overlaySurf,self.origin)
 
