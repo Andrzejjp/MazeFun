@@ -20,16 +20,6 @@ class Maze:
         self.gAlg = None
         self.sAlg = None
 
-    def GenerateCellArray(self):
-        #generates array
-        array =  [[0 for y in range(self.cols)] for x in range(self.rows)]
-        #fills it with cells
-        for y in range(self.cols):
-            for x in range(self.rows):
-                newCell = MazeCell()
-                array[x][y] = newCell
-        return array
-
     def UpdateSize(self,rows,cols):
         self.rows = cols
         self.cols = rows
