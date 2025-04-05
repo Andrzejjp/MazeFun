@@ -2,7 +2,7 @@ import pygame
 from ClickableElements import MazeClick
 
 class Maze:
-    def __init__(self,surface,pos=(110,10),rows=5,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
+    def __init__(self,surface,pos=(110,10),rows=10,cols=10,wColour=(100,200,255),bColour=(255,255,255)):
         self.surface = surface
         self.origin = pos
         self.rows = rows #how many cells long it will be 
@@ -10,9 +10,10 @@ class Maze:
         self.wColour = wColour
         self.bColour = bColour
         self.px = 20
-        self.stateString = "." #stores the unique signiture of the algorithm, each step is 4bits + 16bits 
+        self.genString = "." #stores the generated maze  
         self.solveString = "." #stores the solution to the maze
-        self.adjacencyMatrix = self.GenerateAdjacencyMatrix() # data structure that stores a the maze (0,0)=top left (m,n)=bottom right 
+        self.adjacencyMatrix = None # data structure that stores a the maze (0,0)=top left (m,n)=bottom right 
+        self.GenerateAdjacencyMatrix(2)
         self.gStep = 1
         self.sStep = 1
         self.mRect = pygame.Rect(self.origin,(self.cols*20,self.rows*20))
@@ -21,10 +22,12 @@ class Maze:
         self.sAlg = None
 
     def UpdateSize(self,rows,cols):
-        self.rows = cols
-        self.cols = rows
-        self.cellArray = self.GenerateCellArray()
-        self.clickObj.box = (self.rows*self.px,self.cols*self.px)
+
+        self.rows = rows
+        self.cols = cols
+
+        self.GenerateAdjacencyMatrix(2)
+        self.clickObj.box = (self.cols*self.px,self.rows*self.px)
         self.clickObj.rect = pygame.Rect(self.origin,self.clickObj.box)
         
     def UpdatePx(self,newpx):
@@ -37,137 +40,37 @@ class Maze:
         self.clickObj.rect = pygame.Rect((newOrigin[0],newOrigin[1]),(self.clickObj.rect[2],self.clickObj.rect[3]))
         self.origin = newOrigin
 
-    def AddtoStateString(self,cellPos,direction): # direction followed by x and y in hex
-        block = ""
-        if direction == (1,0):
-            block += "0"
-        elif direction == (-1,0):
-            block += "1"
-        elif direction == (0,1):
-            block += "2"
-        elif direction == (0,-1):
-            block += "3"
-        block += hex(cellPos[0])
-        block += hex(cellPos[1])
-        block += "."
-        self.stateString += block       
-    
-    def AddtoSolveString(self,cell): # takes in cell in adjacency matrix style
-        self.solveString += (str(cell)+".")
-        
-    def UpdateEndStep(self):#Calculates and assigns the value of self.endStep
-        dots = 0
-        for dot in self.stateString:
-            if dot == ".":
-                dots += 1
-        self.endStep = dots
-
-    def RemoveCellWalls(self,cellPos,direction): #direction is a coordinate in (x,y)
-        
-        currentCell = self.cellArray[cellPos[0]][cellPos[1]]
-        adjacentCellCoords = (cellPos[0]+direction[0],cellPos[1]+direction[1])
-        #checks if adjacentCellCoords exist
-        if adjacentCellCoords[0] < self.rows and adjacentCellCoords[0] >= 0:
-            if adjacentCellCoords[1] < self.cols and adjacentCellCoords[1] >= 0:
-                adjacentCell = self.cellArray[adjacentCellCoords[0]][adjacentCellCoords[1]]
-                match direction:
-                    case (1,0):
-                        adjacentCell.wallsList[1] = False
-                    case(-1,0):
-                        adjacentCell.wallsList[0] = False
-                    case(0,1):
-                        adjacentCell.wallsList[3] = False
-                    case(0,-1):
-                        adjacentCell.wallsList[2] = False
-        match direction:
-                    case (1,0):
-                        currentCell.wallsList[0] = False
-                    case(-1,0):
-                        currentCell.wallsList[1] = False
-                    case(0,1):
-                        currentCell.wallsList[2] = False
-                    case(0,-1):
-                        currentCell.wallsList[3] = False
-
-    def ClearMaze(self): #puts the walls back on the maze
-        for y in range(self.cols):
-            for x in range(self.rows):
-                currentCell = self.cellArray[x][y]
-                for i in range (4):
-                    currentCell.wallsList[i] = True
-    
-    def ConvertFromStateString(self,step):
-        #extracts the relevant step#
-        instruction = ""
-        dotcount = 0
-        for i in self.stateString:
-            if i == ".":
-                dotcount += 1
-            if dotcount == step:
-                instruction += i
-        #finds the direction
-        dir = ""
-        match instruction[1] :
-            case "0":
-                dir = (1,0)
-            case "1":
-                dir = (-1,0)
-            case "2":
-                dir = (0,1)
-            case "3":
-                dir = (0,-1)
-        #finds the position
-        pos = ""
-        instruction = instruction[2:]
-        for i in range(len(instruction[2:])):
-            if instruction[2+i] == "x":
-                index = i+1
-        pos = (int(instruction[:index],0),int(instruction[index:],0))
-        return pos,dir
-        
-    def ApplyStep(self,step): #applies the relevant step to the maze step goes 1->
-        #extracts the relevant step#
-        instruction = ""
-        dotcount = 0
-        for i in self.stateString:
-            if i == ".":
-                dotcount += 1
-            if dotcount == step:
-                instruction += i
-        #finds the direction
-        dir = ""
-        match instruction[1] :
-            case "0":
-                dir = (1,0)
-            case "1":
-                dir = (-1,0)
-            case "2":
-                dir = (0,1)
-            case "3":
-                dir = (0,-1)
-        #finds the position
-        pos = ""
-        instruction = instruction[2:]
-        for i in range(len(instruction[2:])):
-            if instruction[2+i] == "x":
-                index = i+1
-        pos = (int(instruction[:index],0),int(instruction[index:],0))
-        self.RemoveCellWalls(pos,dir)
-
-    def UpdateCurrentStep(self,step): #applies all steps from 1 to current step
-        self.UpdateEndStep()
-        if 1 <= step and self.endStep >= step:
-            self.gStep = step
+    def AddtoString(self,type,): # adds instrucion to genString or solveString
+        if type == "g":
+            pass
         else:
-            raise TypeError("step Value is outside the range")
-        self.ClearMaze()
-        for i in range(1,self.gStep):
-            self.ApplyStep(i)
+            pass
+        
+    def GetEndStep(self,type):#Calculates and assigns the value of self.endStep
+        dots = 0
+        if type == "g":
 
-    def GenerateAdjacencyMatrix(self):# generates a graph that represents a maze 1 = path,2 = wall,0 = no connection
+            for dot in self.genString:
+                if dot == ".":
+                    dots += 1
+        
+        else:
+
+            for dot in self.solveString:
+                if dot == ".":
+                    dots += 1
+
+        return dots
+    
+    def GenerateAdjacencyMatrix(self,type=2):#  1 = path,2 = wall,0 = no connection type = 1 or = 2
         rows = self.rows
         cols = self.cols
         vertices  = rows*cols
+
+        if type > 2 or type < 1:
+            raise TypeError("adjacency matrix can only use 1 or 2")
+
+
         
         #generates an un-connected graph
         adjacencyMatrix = [[0 for output in range(vertices)] for input in range(vertices)]
@@ -175,15 +78,15 @@ class Maze:
         for i in range(0,vertices):
             #finds 4 neigbours around
             if (i-cols) > -1: # up
-                adjacencyMatrix[i][i-cols] = 2
+                adjacencyMatrix[i][i-cols] = type
             if (i%cols) != cols-1:# right
-                adjacencyMatrix[i][i+1] = 2
+                adjacencyMatrix[i][i+1] = type
             if (i%cols) != 0: # left
-                adjacencyMatrix[i][i-1] = 2
+                adjacencyMatrix[i][i-1] = type
             if i < vertices-cols: # down
-                adjacencyMatrix[i][i+cols] = 2
+                adjacencyMatrix[i][i+cols] = type
         
-        return adjacencyMatrix
+        self.adjacencyMatrix = adjacencyMatrix
 
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left

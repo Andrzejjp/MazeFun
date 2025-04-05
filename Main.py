@@ -1,9 +1,11 @@
 import pygame
+import random
 from queue import Queue
 from MazeMethods import Maze
 from ClickableElements import Button,Slider,DropBox
 from MazeGenerators import *
 from MazeSolvers import *
+from queue import LifoQueue
 
 winSize = (1400,700)
 FPS = 0
@@ -36,18 +38,18 @@ errorB = Button(win,(0,0),(40,20),"Ok",15)
 # Misc Elements
 newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
 deleteB = Button(win,(10,640),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
-sizeXS = Slider(win,(10,400),(80,5),"sizeX",32,1,15)
-sizeYS = Slider(win,(10,435),(80,5),"sizeY",32,1,15)
+sizeYS = Slider(win,(10,400),(80,5),"sizeX",100,1,15)
+sizeXS = Slider(win,(10,435),(80,5),"sizeY",100,1,15)
 
 # GenerateMaze() Elements
+generateB = Button(win,(10,70),(80,20),"Generate",15)
 
-
-gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"Generate",["DepthFirst"],13)
+gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"SelectG",["RecursiveDF","StackDF","Wilson's"],13)
 
 # SolveMaze() Elements
-solveAlgoB = Button(win,(10,155),(80,20),"solveAlgo",10)
+solveB = Button(win,(10,155),(80,20),"Solve",15)
 
-sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"Solve",["BreadthFirst"],13)
+sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"SelectS",["BreadthFirst"],13)
 
 selectedMaze = None
 
@@ -123,64 +125,37 @@ def DrawStaticSurfs(surface,selectedMaze):
     
 def GenerateMaze(selectedMaze): # everything to prepare generate mode
     if selectedMaze.clickObj.CheckSelect() == True:
-        sizeXS.SetValue(selectedMaze.rows)
-        sizeYS.SetValue(selectedMaze.cols)
+        sizeYS.SetValue(selectedMaze.rows)
+        sizeXS.SetValue(selectedMaze.cols)
         gAlgorithmSelectorD.currentOption = selectedMaze.gAlg
         sAlgorithmSelectorD.currentOption = selectedMaze.sAlg
 
-    sizeXS.Draw()
-    if sizeXS.Clicked() == True: # when let go do below
-        selectedMaze.stateString = "."
-        selectedMaze.UpdateCurrentStep(1)
-        gAlgorithmSelectorD.currentOption = None
-        selectedMaze.gAlg = None
-        sAlgorithmSelectorD.currentOption = None
-        selectedMaze.sAlg = None
-    if sizeXS.clicking == True:
-        selectedMaze.UpdateSize(sizeXS.ReturnValue(),selectedMaze.cols)
-        selectedMaze.solveString = "."
+    if generateB.Clicked() == True:
+        selectedMaze.gAlg = gAlgorithmSelectorD.currentOption
+        AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
+    generateB.Draw()
 
-
-    sizeYS.Draw()
-    if sizeYS.Clicked() == True: #when let go do below
-        selectedMaze.stateString = "."
-        selectedMaze.UpdateCurrentStep(1)
-        gAlgorithmSelectorD.currentOption = None
-        selectedMaze.gAlg = None
-        sAlgorithmSelectorD.currentOption = None
-        selectedMaze.sAlg = None
-    if sizeYS.clicking == True:
-        selectedMaze.UpdateSize(selectedMaze.rows,sizeYS.ReturnValue())
-        selectedMaze.solveString = "."
-
-        
-
-
-
-    if gAlgorithmSelectorD.Clicked() == True:
-        if gAlgorithmSelectorD.open == False:
-            selectedMaze.gAlg = gAlgorithmSelectorD.currentOption
-            AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
+    gAlgorithmSelectorD.Clicked()
     if gAlgorithmSelectorD.open == True: # disable buttons
-        pass
+        generateB.active = False
+        generateB.clicking = True
+        
     else: # reenable buttons
-        pass
+        generateB.active = True
     gAlgorithmSelectorD.Draw()
-
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
 
     if sAlgorithmSelectorD.Clicked() == True:
         if sAlgorithmSelectorD.open == False:
-            if selectedMaze.currentStep > 4 and selectedMaze.currentStep == selectedMaze.endStep:
+            if selectedMaze.gStep > 4 and selectedMaze.currentStep == selectedMaze.GetEndStep("g"):
                 selectedMaze.sAlg = sAlgorithmSelectorD.currentOption
-                AlgorithmManager(1,sAlgorithmSelectorD.currentOption,selectedMaze)
             
             else:
                 sAlgorithmSelectorD.currentOption = None
                 ErrorMessage("maze must be fully generated to be solved")
 
-    if gAlgorithmSelectorD.open == True: # disable buttons
+    if sAlgorithmSelectorD.open == True: # disable buttons
         pass
     else: #reenable buttons
         pass
@@ -192,17 +167,39 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
         case 0: # generating mazes 
 
             maze.stateString = "."
-            maze.ClearMaze()
-            cellPosX = round(maze.rows/2)
-        
-            maze.AddtoStateString((cellPosX,0),(0,-1)) # makes entrance
 
             # algorithms contained within
             
             match algorithm:
-                case 0: # depth first
-                    vList= []
-                    DepthFirst(maze,(round(maze.rows/2),0),vList)
+                case 0: # recursive depth first
+                    if maze.rows > 32 or maze.cols > 32:
+                        ErrorMessage("Cannot use the RecursiveDepthFirst algorithm when maze is larger than 32*32")
+                    else:
+
+                        randomVertex = random.randint(0,maze.rows*maze.cols-1)
+                        visitedList = []
+                        adjacencyMatrix = maze.adjacencyMatrix
+
+                        RecursiveDepthFirst(randomVertex,visitedList,adjacencyMatrix)
+                
+                case 1: # stack depth first
+                    randomVertex = random.randint(0,maze.rows*maze.cols-1)
+                    adjacencyMatrix = maze.adjacencyMatrix
+                    visitedList = []
+                    stack = LifoQueue()
+
+                    StackDepthFirst(randomVertex,adjacencyMatrix,visitedList,stack)
+                
+                case 2: # Wilson's Algorithm
+                    randomVertex = random.randint(0,maze.rows*maze.cols-1)
+                    adjacencyMatrix = maze.adjacencyMatrix
+                    randomVertex2 = None
+                    while True:
+                        randomVertex2 = random.randint(0,maze.rows*maze.cols-1)
+                        if randomVertex != randomVertex2:
+                            break
+
+                    WilsonsAlgorithm(adjacencyMatrix,[randomVertex])
                 
                 case _: # default case
                     
@@ -212,10 +209,6 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
             
 
             # ^^^^^^^^^^^^^^^^
-            
-            maze.AddtoStateString((cellPosX,maze.cols-1),(0,1)) # makes exit
-            maze.UpdateEndStep()
-            maze.UpdateCurrentStep(maze.endStep)
             maze.solveString = "."
             maze.sAlg = None
             sAlgorithmSelectorD.currentOption = None
@@ -257,7 +250,6 @@ while running:
     for maze in mazeList:
         maze.DrawMazeThin()
         maze.clickObj.RegisterClick()
-        maze.DrawSolution()
         
         #enforces 1 maze to be selected at a time
         selectedCount = 0
@@ -281,7 +273,7 @@ while running:
                 mazeList.pop(i)
     
     # generates a new maze
-    if newMazeB.Clicked():
+    if newMazeB.Clicked(): # Newmaze button click event
         mazeList.append(Maze(win))
         if len(mazeList) > 1 :
             mazeList[-2].clickObj.selected = False
@@ -300,6 +292,30 @@ while running:
         GenerateMaze(selectedMaze)
 
         SolveMaze(selectedMaze)
+
+        sizeYS.Draw()
+        if sizeYS.Clicked() == True: # when let go do below
+            selectedMaze.stateString = "."
+            selectedMaze.UpdateCurrentStep(1)
+            gAlgorithmSelectorD.currentOption = None
+            selectedMaze.gAlg = None
+            sAlgorithmSelectorD.currentOption = None
+            selectedMaze.sAlg = None
+        if sizeYS.clicking == True:
+            selectedMaze.UpdateSize(sizeYS.ReturnValue(),selectedMaze.cols)
+            selectedMaze.solveString = "."
+
+        sizeXS.Draw()
+        if sizeXS.Clicked() == True: #when let go do below
+            selectedMaze.stateString = "."
+            selectedMaze.UpdateCurrentStep(1)
+            gAlgorithmSelectorD.currentOption = None
+            selectedMaze.gAlg = None
+            sAlgorithmSelectorD.currentOption = None
+            selectedMaze.sAlg = None
+        if sizeXS.clicking == True:
+            selectedMaze.UpdateSize(selectedMaze.rows,sizeXS.ReturnValue())
+            selectedMaze.solveString = "."
 
         # deletes a maze if button is clicked
         if selectedMaze != None:
