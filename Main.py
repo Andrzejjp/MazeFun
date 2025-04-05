@@ -8,7 +8,7 @@ from MazeSolvers import *
 from queue import LifoQueue
 
 winSize = (1400,700)
-FPS = 0
+FPS = 60
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
@@ -38,8 +38,8 @@ errorB = Button(win,(0,0),(40,20),"Ok",15)
 # Misc Elements
 newMazeB = Button(win,(10,5),(80,20),"New Maze",15)
 deleteB = Button(win,(10,640),(80,20),"Delete Maze",12,(200,200,200),(255,49,49))
-sizeYS = Slider(win,(10,400),(80,5),"sizeX",100,1,15)
-sizeXS = Slider(win,(10,435),(80,5),"sizeY",100,1,15)
+sizeYS = Slider(win,(10,400),(80,5),"sizeX",100,2,15)
+sizeXS = Slider(win,(10,435),(80,5),"sizeY",100,2,15)
 
 # GenerateMaze() Elements
 generateB = Button(win,(10,70),(80,20),"Generate",15)
@@ -144,11 +144,16 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         generateB.active = True
     gAlgorithmSelectorD.Draw()
 
+    # animate the maze drawing
+    if selectedMaze.gStep < selectedMaze.GetEndStep("g"):
+        selectedMaze.ApplyString("g",selectedMaze.gStep)
+        selectedMaze.gStep += 1
+
 def SolveMaze(selectedMaze): # everything to prepare solve mode
 
     if sAlgorithmSelectorD.Clicked() == True:
         if sAlgorithmSelectorD.open == False:
-            if selectedMaze.gStep > 4 and selectedMaze.currentStep == selectedMaze.GetEndStep("g"):
+            if 2 < selectedMaze.GetEndStep("g"):
                 selectedMaze.sAlg = sAlgorithmSelectorD.currentOption
             
             else:
@@ -166,7 +171,8 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
     match mode:
         case 0: # generating mazes 
 
-            maze.stateString = "."
+            maze.genString = "."
+            maze.gStep = 1
 
             # algorithms contained within
             
@@ -180,7 +186,7 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                         visitedList = []
                         adjacencyMatrix = maze.adjacencyMatrix
 
-                        RecursiveDepthFirst(randomVertex,visitedList,adjacencyMatrix)
+                        RecursiveDepthFirst(randomVertex,visitedList,adjacencyMatrix,maze)
                 
                 case 1: # stack depth first
                     randomVertex = random.randint(0,maze.rows*maze.cols-1)
@@ -188,7 +194,7 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                     visitedList = []
                     stack = LifoQueue()
 
-                    StackDepthFirst(randomVertex,adjacencyMatrix,visitedList,stack)
+                    StackDepthFirst(randomVertex,adjacencyMatrix,visitedList,stack,maze)
                 
                 case 2: # Wilson's Algorithm
                     randomVertex = random.randint(0,maze.rows*maze.cols-1)
@@ -199,14 +205,12 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                         if randomVertex != randomVertex2:
                             break
 
-                    WilsonsAlgorithm(adjacencyMatrix,[randomVertex])
+                    WilsonsAlgorithm(adjacencyMatrix,[randomVertex],maze)
                 
                 case _: # default case
                     
                     maze.gAlg = None
                     gAlgorithmSelectorD.currentOption = None
-
-            
 
             # ^^^^^^^^^^^^^^^^
             maze.solveString = "."
@@ -296,7 +300,6 @@ while running:
         sizeYS.Draw()
         if sizeYS.Clicked() == True: # when let go do below
             selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
             gAlgorithmSelectorD.currentOption = None
             selectedMaze.gAlg = None
             sAlgorithmSelectorD.currentOption = None
@@ -308,7 +311,6 @@ while running:
         sizeXS.Draw()
         if sizeXS.Clicked() == True: #when let go do below
             selectedMaze.stateString = "."
-            selectedMaze.UpdateCurrentStep(1)
             gAlgorithmSelectorD.currentOption = None
             selectedMaze.gAlg = None
             sAlgorithmSelectorD.currentOption = None

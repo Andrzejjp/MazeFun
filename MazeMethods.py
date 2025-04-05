@@ -13,7 +13,7 @@ class Maze:
         self.genString = "." #stores the generated maze  
         self.solveString = "." #stores the solution to the maze
         self.adjacencyMatrix = None # data structure that stores a the maze (0,0)=top left (m,n)=bottom right 
-        self.GenerateAdjacencyMatrix(2)
+        self.GenerateAdjacencyMatrix()
         self.gStep = 1
         self.sStep = 1
         self.mRect = pygame.Rect(self.origin,(self.cols*20,self.rows*20))
@@ -40,13 +40,13 @@ class Maze:
         self.clickObj.rect = pygame.Rect((newOrigin[0],newOrigin[1]),(self.clickObj.rect[2],self.clickObj.rect[3]))
         self.origin = newOrigin
 
-    def AddtoString(self,type,): # adds instrucion to genString or solveString
+    def AddtoString(self,type,vertex1,vertex2): # adds instrucion to genString or solveString
         if type == "g":
-            pass
-        else:
-            pass
+            self.genString += str(vertex1)+","+str(vertex2)+"."
+        elif type == "s":
+            self.solveString += str(vertex1)+","+str(vertex2)+"."
         
-    def GetEndStep(self,type):#Calculates and assigns the value of self.endStep
+    def GetEndStep(self,type): # finds the total steps
         dots = 0
         if type == "g":
 
@@ -54,13 +54,13 @@ class Maze:
                 if dot == ".":
                     dots += 1
         
-        else:
+        elif type == "s":
 
             for dot in self.solveString:
                 if dot == ".":
                     dots += 1
 
-        return dots
+        return (dots-1)
     
     def GenerateAdjacencyMatrix(self,type=2):#  1 = path,2 = wall,0 = no connection type = 1 or = 2
         rows = self.rows
@@ -87,6 +87,55 @@ class Maze:
                 adjacencyMatrix[i][i+cols] = type
         
         self.adjacencyMatrix = adjacencyMatrix
+
+    def ApplyString(self,type,steps): #applies from step 1 to "steps"
+
+        self.GenerateAdjacencyMatrix()
+
+        if steps > self.GetEndStep(type):
+            steps = self.GetEndStep(type)
+
+        if type == "g":
+           codeString = self.genString
+        elif type == "s":
+            codeString = self.solveString
+        
+        # extracts desired instruction
+        for step in range(1,steps+1): 
+
+            dots = 0
+            index1 = None
+            index2 = None
+            for i in range(len(codeString)):
+                if codeString[i] == ".":
+                    dots+=1
+                
+                if dots == step and index1 == None:
+                    index1 = i
+                if dots == step+1 and index2 == None:
+                    index2 = i
+
+                if dots > step:
+                    break
+                
+            instruction = codeString[(index1+1):index2]
+
+            for i in range(len(instruction)):
+
+                if instruction[i] == ",":
+                    vertex1 = int(instruction[0:i])
+                    vertex2 = int(instruction[i+1:len(instruction)])
+                    self.adjacencyMatrix[vertex1][vertex2] = 1
+                    self.adjacencyMatrix[vertex2][vertex1] = 1
+
+            
+
+            
+                
+        
+            
+
+
 
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left

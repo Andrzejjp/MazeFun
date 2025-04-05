@@ -1,7 +1,7 @@
 import random 
 
 
-def RecursiveDepthFirst(startingVertex,visitedList,adjacencyMatrix):
+def RecursiveDepthFirst(startingVertex,visitedList,adjacencyMatrix,maze):
     currentVertex = startingVertex
     visitedList.append(currentVertex)
 
@@ -17,15 +17,15 @@ def RecursiveDepthFirst(startingVertex,visitedList,adjacencyMatrix):
             randomIndexinNeigboursList = random.randint(0,len(neigboursList)-1)
             randomNeigbour = neigboursList[randomIndexinNeigboursList]
             if (randomNeigbour in visitedList) == False:
-                adjacencyMatrix[currentVertex][randomNeigbour] = 1 # updates the array
-                adjacencyMatrix[randomNeigbour][currentVertex] = 1
-                RecursiveDepthFirst(randomNeigbour,visitedList,adjacencyMatrix)
+                maze.AddtoString("g",currentVertex,randomNeigbour) # updates genString
+                RecursiveDepthFirst(randomNeigbour,visitedList,adjacencyMatrix,maze)
                 break
+
             else:
                 neigboursList.pop(randomIndexinNeigboursList)
                 break
 
-def StackDepthFirst(startingVertex,adjacencyMatrix,visitedList,stack):
+def StackDepthFirst(startingVertex,adjacencyMatrix,visitedList,stack,maze):
 
     visitedList.append(startingVertex)
     stack.put(startingVertex)
@@ -44,12 +44,11 @@ def StackDepthFirst(startingVertex,adjacencyMatrix,visitedList,stack):
         if len(unvisitedNeigboursList) != 0:
             randomNeigbour = unvisitedNeigboursList[random.randint(0,len(unvisitedNeigboursList)-1)]
             stack.put(currentVertex)
-            adjacencyMatrix[currentVertex][randomNeigbour] = 1 # updates the array
-            adjacencyMatrix[randomNeigbour][currentVertex] = 1
+            maze.AddtoString("g",currentVertex,randomNeigbour) # updates genString
             visitedList.append(randomNeigbour)
             stack.put(randomNeigbour)
 
-def WilsonsAlgorithm(adjacencyMatrix,mazeList):
+def WilsonsAlgorithm(adjacencyMatrix,mazeList,maze):
 
     while len(mazeList) < len(adjacencyMatrix):
 
@@ -80,8 +79,7 @@ def WilsonsAlgorithm(adjacencyMatrix,mazeList):
                     walkList.append(mazeList[indexOfConnection])
 
                     for i in range(1,len(walkList)):
-                        adjacencyMatrix[walkList[i]][walkList[i-1]] = 1
-                        adjacencyMatrix[walkList[i-1]][walkList[i]] = 1
+                        maze.AddtoString("g",walkList[i],walkList[i-1]) # updates genString
 
                     walkList.pop()
                     mazeList.extend(walkList)
