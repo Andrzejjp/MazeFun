@@ -13,6 +13,7 @@ class Maze:
         self.genString = "." #stores the generated maze  
         self.solveString = "." #stores the solution to the maze
         self.adjacencyMatrix = None # data structure that stores a the maze (0,0)=top left (m,n)=bottom right 
+        self.solutionAdjacencyMatrix = None
         self.GenerateAdjacencyMatrix()
         self.gStep = 1
         self.sStep = 1
@@ -60,9 +61,9 @@ class Maze:
                 if dot == ".":
                     dots += 1
 
-        return (dots-1)
+        return (dots)
     
-    def GenerateAdjacencyMatrix(self,type=2):#  1 = path,2 = wall,0 = no connection type = 1 or = 2
+    def GenerateAdjacencyMatrix(self,type=2,whose="g"):#  1 = path,2 = wall,0 = no connection type = 1 or = 2
         rows = self.rows
         cols = self.cols
         vertices  = rows*cols
@@ -85,12 +86,17 @@ class Maze:
                 adjacencyMatrix[i][i-1] = type
             if i < vertices-cols: # down
                 adjacencyMatrix[i][i+cols] = type
-        
-        self.adjacencyMatrix = adjacencyMatrix
+        if whose == "g":
+            self.adjacencyMatrix = adjacencyMatrix
+        elif whose == "s":
+            self.solutionAdjacencyMatrix = adjacencyMatrix
 
-    def ApplyString(self,type,steps): #applies from step 1 to "steps"
+    def ApplyString(self,type,steps,filler=False): #applies from step 1 to "steps"
 
-        self.GenerateAdjacencyMatrix()
+        if type == "g":
+            self.GenerateAdjacencyMatrix()
+        elif type == "s":
+            self.GenerateAdjacencyMatrix(2,"s")
 
         if steps > self.GetEndStep(type):
             steps = self.GetEndStep(type)
@@ -125,17 +131,16 @@ class Maze:
                 if instruction[i] == ",":
                     vertex1 = int(instruction[0:i])
                     vertex2 = int(instruction[i+1:len(instruction)])
-                    self.adjacencyMatrix[vertex1][vertex2] = 1
-                    self.adjacencyMatrix[vertex2][vertex1] = 1
-
-            
-
-            
-                
-        
-            
-
-
+                    if type == "g":
+                        self.adjacencyMatrix[vertex1][vertex2] = 1
+                        self.adjacencyMatrix[vertex2][vertex1] = 1
+                    
+                    if type == "s"and filler == False:
+                        self.solutionAdjacencyMatrix[vertex1][vertex2] = 1
+                        self.solutionAdjacencyMatrix[vertex2][vertex1] = 1
+                    elif type == "s" and filler == True:
+                        self.solutionAdjacencyMatrix[vertex1][vertex2] = 3
+                        self.solutionAdjacencyMatrix[vertex2][vertex1] = 3
 
     def OutputMaze(self): #displays the maze in the terminal
         #cycles through the list form top right to bottom left
@@ -192,57 +197,48 @@ class Maze:
                 if self.adjacencyMatrix[i][i+1] == 2:
                     pygame.draw.line(surf,wColour,(originX+px*(x+1),originY+px*y),(originX+px*(x+1),originY+px*(y+1)),2)
 
-
-
-
-        # for y in range(self.cols):
-        #     for x in range(self.rows):
-        #         currentCell = self.cellArray[x][y]
-
-        #         if currentCell.wallsList[0] == True:
-        #             pygame.draw.line(surf,wColour,(x*px+px+oriX-1,y*px+oriY),(x*px+px+oriX-1,y*px+px+oriY))
-
-        #         if currentCell.wallsList[1] == True:
-        #             pygame.draw.line(surf,wColour,(x*px+oriX,y*px+oriY),(x*px+oriX,y*px+px+oriY))
-
-        #         if currentCell.wallsList[3] == True:
-        #             pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+oriY),(x*px+oriX,y*px+oriY))
-                
-        #         if currentCell.wallsList[2] == True:
-        #             pygame.draw.line(surf,wColour,(x*px+px+oriX,y*px+px+oriY-1),(x*px+oriX,y*px+px+oriY-1))
-
     def DrawMazeThick(self):
         pass
 
     def DrawSolution(self):
+        surf = self.surface
+        px = self.px
+        height = self.rows
+        length = self.cols
 
-        if len(self.solveString) > 1: #checks if the string has been filled
-            sS = self.solveString
+        vertices = height*length
+        wColour = (0,255,0)
+        originX = self.origin[0]
+        originY = self.origin[1]
+
+        for i in range(0,vertices):
+            x = i%length
+            y = i//length
             
-            #extracts relevent point data
-            dIL = [] # dotIndexList
-            for i in range(len(sS)):
-                if sS[i] == ".":
-                    dIL.append(i)
+            # makes a wall for up and right
+            if (i-length) > -1: # up
+                if self.solutionAdjacencyMatrix[i][i-length] == 1:
+                    vertexPos = (originX+px*x+px//2,originY+px*y+px//2)
+                    neigbourPos = (originX+px*x+px//2,originY+px*(y-1)+px//2)
+
+                    pygame.draw.line(surf,wColour,vertexPos,neigbourPos,2)
+                    
+            if (i%length) != length-1:# right
+                if self.solutionAdjacencyMatrix[i][i+1] == 1:
+                    vertexPos = (originX+px*x+px//2,originY+px*y+px//2)
+                    neigbourPos = (originX+px*(x+1)+px//2,originY+px*y+px//2)
+                    
+                    pygame.draw.line(surf,wColour,vertexPos,neigbourPos,2)
             
-            for i in range(2,len(dIL)):
-
-                cell1 = int(sS[dIL[i-2]+1:dIL[i-1]])
-                cell2 = int(sS[dIL[i-1]+1:dIL[i]])
-                
-                #converts to coords
-                point1 = ((cell1%self.rows),(cell1//self.rows))
-                point2 = ((cell2%self.rows),(cell2//self.rows))
-
-                # scales up to maze and centers on maze
-                px = self.px
-                ox = self.origin[0]
-                oy = self.origin[1]
-                point1 = (point1[0]*px+ox+px/2,point1[1]*px+oy+px/2)
-                point2 = (point2[0]*px+ox+px/2,point2[1]*px+oy+px/2)
-
-                pygame.draw.line(self.surface,(0,255,0),point1,point2,3)
-
+            # makes a wall for up and right
+            if (i-length) > -1: # up
+                if self.solutionAdjacencyMatrix[i][i-length] == 3:
+                    pygame.draw.line(surf,wColour,(originX+px*x,originY+px*y),(originX+px*(x+1),originY+px*y),2)
+                    
+            if (i%length) != length-1:# right
+                if self.solutionAdjacencyMatrix[i][i+1] == 3:
+                    pygame.draw.line(surf,wColour,(originX+px*(x+1),originY+px*y),(originX+px*(x+1),originY+px*(y+1)),2)
+                    
     def MoveMaze(self):
         disp = self.clickObj.mouseDisp
         mousepos = pygame.mouse.get_pos()

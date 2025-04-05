@@ -8,7 +8,7 @@ from MazeSolvers import *
 from queue import LifoQueue
 
 winSize = (1400,700)
-FPS = 60
+FPS = 0
 running = True
 clock = pygame.time.Clock()
 pygame.display.init()
@@ -47,9 +47,9 @@ generateB = Button(win,(10,70),(80,20),"Generate",15)
 gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"SelectG",["RecursiveDF","StackDF","Wilson's"],13)
 
 # SolveMaze() Elements
-solveB = Button(win,(10,155),(80,20),"Solve",15)
+solveB = Button(win,(10,205),(80,20),"Solve",15)
 
-sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"SelectS",["BreadthFirst"],13)
+sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"SelectS",["BreadthFirst","DeadEndFiller"],13)
 
 selectedMaze = None
 
@@ -131,6 +131,8 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         sAlgorithmSelectorD.currentOption = selectedMaze.sAlg
 
     if generateB.Clicked() == True:
+        if gAlgorithmSelectorD.currentOption == None:
+            ErrorMessage("Try selecting an algorithm from the DropBox above the Generate Button")
         selectedMaze.gAlg = gAlgorithmSelectorD.currentOption
         AlgorithmManager(0,gAlgorithmSelectorD.currentOption,selectedMaze)
     generateB.Draw()
@@ -150,21 +152,36 @@ def GenerateMaze(selectedMaze): # everything to prepare generate mode
         selectedMaze.gStep += 1
 
 def SolveMaze(selectedMaze): # everything to prepare solve mode
+    if solveB.Clicked():
+        if sAlgorithmSelectorD.currentOption == None:
+            ErrorMessage("Try selecting an algorithm from the DropBox above the Solve Button")
 
-    if sAlgorithmSelectorD.Clicked() == True:
-        if sAlgorithmSelectorD.open == False:
-            if 2 < selectedMaze.GetEndStep("g"):
-                selectedMaze.sAlg = sAlgorithmSelectorD.currentOption
+        elif 2 < selectedMaze.GetEndStep("g"):
+            selectedMaze.sAlg = sAlgorithmSelectorD.currentOption
+            AlgorithmManager(1,sAlgorithmSelectorD.currentOption,selectedMaze)
             
-            else:
-                sAlgorithmSelectorD.currentOption = None
-                ErrorMessage("maze must be fully generated to be solved")
+        else:
+            sAlgorithmSelectorD.currentOption = None
+            ErrorMessage("maze must be fully generated to be solved")
+        
+    solveB.Draw()
+
+    sAlgorithmSelectorD.Clicked()
 
     if sAlgorithmSelectorD.open == True: # disable buttons
-        pass
-    else: #reenable buttons
-        pass
+        solveB.active = False
+        solveB.clicking = True
+    
+    else: #re-enable buttons
+        solveB.active = True
     sAlgorithmSelectorD.Draw()
+
+    #animates solution to maze
+    if selectedMaze.sStep < selectedMaze.GetEndStep("s"):
+        selectedMaze.ApplyString("s",selectedMaze.sStep)
+        selectedMaze.sStep += 1
+    if selectedMaze.sAlg != None:
+        selectedMaze.DrawSolution()
 
 def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze 
 
@@ -214,21 +231,18 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
 
             # ^^^^^^^^^^^^^^^^
             maze.solveString = "."
-            maze.sAlg = None
-            sAlgorithmSelectorD.currentOption = None
+            maze.ApplyString("s",maze.GetEndStep("s"))
 
         case 1: # solving mazes
 
-            selectedMaze.UpdateEndStep()
-            selectedMaze.UpdateCurrentStep(selectedMaze.endStep)
             maze.solveString = "."
+            maze.sStep = 1
 
             # algorithms contained within
 
             match algorithm:
                 case 0: # breadth first 
 
-                    maze.GenerateAdjacencyMatrix()
                     nodes = maze.rows*maze.cols
                     q = Queue(nodes)
                     d = []
@@ -236,7 +250,13 @@ def AlgorithmManager(mode,algorithm,maze): # prepares algorithm for maze
                     for i in range(nodes):
                         d.append(False)
                         p.append(False)
-                    BreadthFirstSearch(round(maze.rows/2),round(nodes-maze.rows/2),q,d,p,False,maze)
+                    BreadthFirstSearch(0,nodes-1,q,d,p,False,maze)
+                
+                case 1: # dead end filler
+                    nodes = maze.rows*maze.cols
+                    adjacencyMatrix = maze.adjacencyMatrix
+
+                    DeadEndFilling(0,nodes-1,adjacencyMatrix,maze)
                 
                 case _: # default Case
                     maze.sAlg = None
@@ -307,6 +327,8 @@ while running:
         if sizeYS.clicking == True:
             selectedMaze.UpdateSize(sizeYS.ReturnValue(),selectedMaze.cols)
             selectedMaze.solveString = "."
+            selectedMaze.ApplyString("g",selectedMaze.gStep)
+            selectedMaze.ApplyString("s",selectedMaze.sStep)
 
         sizeXS.Draw()
         if sizeXS.Clicked() == True: #when let go do below
@@ -318,6 +340,8 @@ while running:
         if sizeXS.clicking == True:
             selectedMaze.UpdateSize(selectedMaze.rows,sizeXS.ReturnValue())
             selectedMaze.solveString = "."
+            selectedMaze.ApplyString("g",selectedMaze.gStep)
+            selectedMaze.ApplyString("s",selectedMaze.sStep)
 
         # deletes a maze if button is clicked
         if selectedMaze != None:
