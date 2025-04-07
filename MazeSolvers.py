@@ -36,7 +36,6 @@ def DeadEndFilling(start,destination,adjacencyMatrix,maze):
             deadEndIndex = None
             for j in range(0,len(adjacencyMatrix)-1):
                 
-
                 if i != start or i!= destination or j!= start or j!= destination:
 
                     if adjacencyMatrix[i][j] == 1:
@@ -44,8 +43,8 @@ def DeadEndFilling(start,destination,adjacencyMatrix,maze):
                         deadEndIndex = i
             
             if ends == 1:
-                maze.AddtoString("s",i,j)
+                maze.AddtoString("s",deadEndIndex,j)
                 break
-        
+
         finish = True
     

@@ -24,7 +24,9 @@ helpB = Button(win,(10,670),(80,20),"Help",15)
 helpText = [
     "Help Menu",
     "",
-    "click on the New button to create your first maze",
+    "1.click on the New button to create your first maze",
+    "2.click SelectG to select an algorithm and click on generate to make a maze ",
+    "3.click SelectS to select an algoirthm and click solve to solve the maze",
     "",
     "CONTROLS",
     "",
@@ -49,7 +51,7 @@ gAlgorithmSelectorD = DropBox(win,(10,45),(80,20),"SelectG",["RecursiveDF","Stac
 # SolveMaze() Elements
 solveB = Button(win,(10,205),(80,20),"Solve",15)
 
-sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"SelectS",["BreadthFirst","DeadEndFiller"],13)
+sAlgorithmSelectorD = DropBox(win,(10,180),(80,20),"SelectS",["BreadthFirst",],13)
 
 selectedMaze = None
 
@@ -295,7 +297,6 @@ while running:
             if selectedMaze == mazeList[i]:
                 mazeList.append(mazeList[i])
                 mazeList.pop(i)
-    
     # generates a new maze
     if newMazeB.Clicked(): # Newmaze button click event
         mazeList.append(Maze(win))
